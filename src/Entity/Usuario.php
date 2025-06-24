@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -38,6 +40,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 24, nullable: true)]
     private ?string $telefone = null;
+
+    /**
+     * @var Collection<int, Evento>
+     */
+    #[ORM\OneToMany(targetEntity: Evento::class, mappedBy: 'criador', orphanRemoval: true)]
+    private Collection $eventos;
+
+    public function __construct()
+    {
+        $this->eventos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -132,6 +145,36 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelefone(?string $telefone): static
     {
         $this->telefone = $telefone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Evento>
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(Evento $evento): static
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos->add($evento);
+            $evento->setCriador($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(Evento $evento): static
+    {
+        if ($this->eventos->removeElement($evento)) {
+            // set the owning side to null (unless already changed)
+            if ($evento->getCriador() === $this) {
+                $evento->setCriador(null);
+            }
+        }
 
         return $this;
     }
