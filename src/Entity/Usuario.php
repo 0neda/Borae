@@ -85,8 +85,8 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        // guarantee every user at least has ROLE_USUARIO
+        $roles[] = 'ROLE_USUARIO';
 
         return array_unique($roles);
     }
@@ -99,6 +99,57 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function addRole(string $role): static
+    {
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): static
+    {
+        $this->roles = array_filter($this->roles, fn($r) => $r !== $role);
+
+        return $this;
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles());
+    }
+
+    public function setAsAdmin(): static
+    {
+        return $this->addRole('ROLE_ADMIN');
+    }
+
+    public function setAsEmpresa(): static
+    {
+        return $this->addRole('ROLE_EMPRESA');
+    }
+
+    public function removeAdmin(): static
+    {
+        return $this->removeRole('ROLE_ADMIN');
+    }
+
+    public function removeEmpresa(): static
+    {
+        return $this->removeRole('ROLE_EMPRESA');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('ROLE_ADMIN');
+    }
+
+    public function isEmpresa(): bool
+    {
+        return $this->hasRole('ROLE_EMPRESA');
     }
 
     /**
