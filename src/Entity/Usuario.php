@@ -79,6 +79,11 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->usuario;
     }
 
+    public function getDisplayName(): string
+    {
+        return $this->nome ?? $this->usuario ?? 'Usuário #' . $this->id;
+    }
+
     /**
      * @see UserInterface
      */
@@ -122,6 +127,21 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return in_array($role, $this->getRoles());
     }
 
+    public function getRolesFormatadas(): string
+    {
+        $roles = array_filter($this->getRoles(), fn($role) => $role !== 'ROLE_USUARIO');
+
+        $rolesFormatted = array_map(function ($role) {
+            return match ($role) {
+                'ROLE_ADMIN' => 'Administrador',
+                'ROLE_EMPRESA' => 'Empresa',
+                default => str_replace('ROLE_', '', $role)
+            };
+        }, $roles);
+
+        return empty($rolesFormatted) ? 'Usuário' : implode(', ', $rolesFormatted);
+    }
+
     public function setAsAdmin(): static
     {
         return $this->addRole('ROLE_ADMIN');
@@ -151,6 +171,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->hasRole('ROLE_EMPRESA');
     }
+
+    public function toggleAdmin(): static
+    {
+        return $this->isAdmin() ? $this->removeAdmin() : $this->setAsAdmin();
+    }
+
+    public function toggleEmpresa(): static
+    {
+        return $this->isEmpresa() ? $this->removeEmpresa() : $this->setAsEmpresa();
+    }
+
 
     /**
      * @see PasswordAuthenticatedUserInterface
