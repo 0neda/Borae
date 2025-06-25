@@ -68,6 +68,61 @@ class Evento
         return $this;
     }
 
+    public function getDataHoraInicio(): ?\DateTime
+    {
+        if (!$this->data_inicio || !$this->hora_inicio) {
+            return null;
+        }
+
+        $dataHora = clone $this->data_inicio;
+        $dataHora->setTime(
+            (int)$this->hora_inicio->format('H'),
+            (int)$this->hora_inicio->format('i'),
+            (int)$this->hora_inicio->format('s')
+        );
+
+        return $dataHora;
+    }
+
+    public function isPassado(): bool
+    {
+        $dataHoraInicio = $this->getDataHoraInicio();
+        return $dataHoraInicio && $dataHoraInicio < new \DateTime();
+    }
+
+    public function isProximo(int $dias = 7): bool
+    {
+        $dataHoraInicio = $this->getDataHoraInicio();
+        if (!$dataHoraInicio) {
+            return false;
+        }
+
+        $agora = new \DateTime();
+        $limite = (clone $agora)->modify("+{$dias} days");
+
+        return $dataHoraInicio >= $agora && $dataHoraInicio <= $limite;
+    }
+
+    public function getDataFormatada(string $formato = 'd/m/Y'): ?string
+    {
+        return $this->data_inicio?->format($formato);
+    }
+
+    public function getHoraFormatada(string $formato = 'H:i'): ?string
+    {
+        return $this->hora_inicio?->format($formato);
+    }
+
+    public function isHoje(): bool
+    {
+        if (!$this->data_inicio) {
+            return false;
+        }
+
+        $hoje = new \DateTime();
+        return $this->data_inicio->format('Y-m-d') === $hoje->format('Y-m-d');
+    }
+
     public function getCriador(): ?Usuario
     {
         return $this->criador;
