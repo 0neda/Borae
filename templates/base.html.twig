@@ -7,6 +7,9 @@
         Boraê!
       {% endblock %}
     </title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css" />
     {% block stylesheets %}
       {{ vite_entry_link_tags('app') }}
     {% endblock %}
@@ -16,8 +19,85 @@
     {% endblock %}
   </head>
   <body>
-    <img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;" />
-    <button class="btn btn-primary" onclick="location.href='{{ path('app_index') }}'">Início</button>
+    <div class="navbar bg-base-100 shadow-md px-10">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <!-- Icone do menu mobile -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+          </div>
+
+          <!-- Menu dropdown (para mobile) -->
+          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            <li>
+              <a>Eventos</a>
+              <ul class="p-2">
+                <li>
+                  <a>Lista de eventos</a>
+                </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                  <li>
+                    <a>Gerenciar eventos</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <a href="{{ path('app_index') }}"><img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;" /></a>
+      </div>
+
+      <!-- Menu centralizado (telas maiores) -->
+      <div class="navbar-center hidden lg:flex">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
+          <ul tabindex="0" class="dropdown-content menu bg-base-100/10 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+            <li>
+              <a>Lista de eventos</a>
+            </li>
+            {% if is_granted('ROLE_ADMIN') %}
+              <li>
+                <a>Gerenciar eventos</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ações do usuário -->
+      <div class="navbar-end space-x-2">
+        {% if not app.user %}
+          <a class="btn btn-dash" href="{{ path('app_login') }}">Entrar</a>
+          <a class="btn btn-success btn-dash" href="{{ path('app_registro') }}">Registrar</a>
+        {% else %}
+          <!-- Menu no avatar do usuário -->
+          <div class="flex gap-2">
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full outline-2 outline-primary outline-offset-2">
+                  <img alt="Avatar de {{ app.user.nome }}" src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true" class="w-full h-full object-cover" />
+                </div>
+              </div>
+              <ul tabindex="0" class="dropdown-content menu bg-base-100/10 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
+                <div class="mb-2 space-x-1">
+                  <span>Bem vindo,</span><span class="font-bold">{{ app.user.nome }}!</span>
+                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                  <li>
+                    <a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white"><i class="ph ph-star-four text-xl"></i> Administração</a>
+                  </li>
+                {% endif %}
+                <li>
+                  <a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white" href="{{ path('app_logout') }}"><i class="ph ph-sign-out text-xl"></i> Sair</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
     {% block body %}
 
     {% endblock %}
