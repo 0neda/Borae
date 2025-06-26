@@ -6,6 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "daisyui": "^5.0.43",
         "vite": "^6.0",
         "vite-plugin-symfony": "^8.2"
     },
