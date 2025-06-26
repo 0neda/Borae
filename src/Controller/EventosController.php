@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/eventos')]
 final class EventosController extends AbstractController
 {
-    #[Route(name: 'app_eventos_index', methods: ['GET'])]
+    #[Route(name: 'app_eventos_listar', methods: ['GET'])]
     public function index(EventoRepository $eventoRepository): Response
     {
         return $this->render('eventos/index.html.twig', [
@@ -22,7 +22,15 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_eventos_new', methods: ['GET', 'POST'])]
+    #[Route('/gerenciar', name: 'app_eventos_gerenciar', methods: ['GET'])]
+    public function manage(EventoRepository $eventoRepository): Response
+    {
+        return $this->render('eventos/index.html.twig', [
+            'eventos' => $eventoRepository->findByCriador($this->getUser()),
+        ]);
+    }
+
+    #[Route('/criar', name: 'app_eventos_criar', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evento = new Evento();
@@ -33,7 +41,7 @@ final class EventosController extends AbstractController
             $entityManager->persist($evento);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_eventos_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('eventos/new.html.twig', [
@@ -42,7 +50,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_eventos_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_eventos_mostrar', methods: ['GET'])]
     public function show(Evento $evento): Response
     {
         return $this->render('eventos/show.html.twig', [
@@ -50,7 +58,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_eventos_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/editar', name: 'app_eventos_editar', methods: ['GET', 'POST'])]
     public function edit(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventoForm::class, $evento);
@@ -59,7 +67,7 @@ final class EventosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_eventos_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('eventos/edit.html.twig', [
@@ -68,14 +76,14 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_eventos_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_eventos_deletar', methods: ['POST'])]
     public function delete(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$evento->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $evento->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($evento);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_eventos_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
     }
 }

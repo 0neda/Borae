@@ -24,9 +24,7 @@
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
             <!-- Icone do menu mobile -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-            </svg>
+            <i class="ph ph-list text-xl"></i>
           </div>
 
           <!-- Menu dropdown (para mobile) -->
@@ -37,9 +35,9 @@
                 <li>
                   <a>Lista de eventos</a>
                 </li>
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
                   <li>
-                    <a>Gerenciar eventos</a>
+                    <a href="{{ path('app_eventos_gerenciar') }}">Gerenciar eventos</a>
                   </li>
                 {% endif %}
               </ul>
@@ -55,11 +53,11 @@
           <div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
           <ul tabindex="0" class="dropdown-content menu bg-base-100/10 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
             <li>
-              <a>Lista de eventos</a>
+              <a href="{{ path('app_eventos_listar') }}">Lista de eventos</a>
             </li>
-            {% if is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
               <li>
-                <a>Gerenciar eventos</a>
+                <a href="{{ path('app_eventos_gerenciar') }}">Gerenciar eventos</a>
               </li>
             {% endif %}
           </ul>
@@ -86,7 +84,7 @@
                 </div>
                 {% if is_granted('ROLE_ADMIN') %}
                   <li>
-                    <a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white"><i class="ph ph-star-four text-xl"></i> Administração</a>
+                    <a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white" href="{{ path('app_admin') }}"><i class="ph ph-star-four text-xl"></i> Administração</a>
                   </li>
                 {% endif %}
                 <li>
@@ -98,8 +96,22 @@
         {% endif %}
       </div>
     </div>
-    {% block body %}
+    <div class="flex flex-col justify-center items-center p-10 gap-2">
+      {% for category, messages in app.flashes %}
+        {% for message in messages %}
+          <div class="toast toast-center">
+            <div class="alert alert-{{ category }}">
+              <div class="flex items-center gap-2">
+                <i class="text-xl {{ category == 'error' ? 'ph ph-x-circle' : category == 'warning' ? 'ph ph-warning-circle' : category == 'success' ? 'ph ph-check-circle' : 'ph ph-dots-three-circle' }}"></i>
+                <span>{{ message }}</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+      {% block body %}
 
-    {% endblock %}
+      {% endblock %}
+    </div>
   </body>
 </html>

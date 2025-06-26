@@ -5,29 +5,26 @@
 {% endblock %}
 
 {% block body %}
-  <style>
-    .example-wrapper {
-      margin: 1em auto;
-      max-width: 800px;
-      width: 95%;
-      font: 18px/1.5 sans-serif;
-    }
-    .example-wrapper code {
-      background: #f5f5f5;
-      padding: 2px 6px;
-    }
-  </style>
+  <h1 class="text-3xl font-bold underline">Botões para teste de cargos</h1>
 
-  <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+  <div class="flex flex-col gap-2">
+    {% if app.user %}
+      Seus cargos são:<ul>{{ app.user.getRolesFormatadas() }}</ul>
+      <form method="post" action="{{ path('app_toggle_admin') }}">
+        <button type="submit" class="justify-start btn {{ app.user.isAdmin ? 'btn-error' : 'btn-warning' }} w-full">
+          <i class="{{ app.user.isAdmin ? 'ph ph-minus-circle' : 'ph ph-shield-star' }} text-xl mr-2"></i>
+          {{ app.user.isAdmin ? 'Remover Admin' : 'Tornar-se Admin' }}
+        </button>
+      </form>
 
-    This x messxage is coming from:<ul>
-      <li>
-        Your x at <code>C:/DEV/Borae/src/Controller/IndexController.php</code>
-      </li>
-      <li>
-        Your template at <code>C:/DEV/Borae/templates/index/index.html.twig</code>
-      </li>
-    </ul>
+      <form method="post" action="{{ path('app_toggle_empresa') }}">
+        <button type="submit" class="btn {{ app.user.isEmpresa ? 'btn-error' : 'btn-primary' }} w-full">
+          <i class="{{ app.user.isEmpresa ? 'ph ph-minus-circle' : 'ph ph-building-office' }} text-xl mr-2"></i>
+          {{ app.user.isEmpresa ? 'Remover Empresa' : 'Tornar-se Empresa' }}
+        </button>
+      </form>
+    {% else %}
+      <p>Você precisa estar logado para ver esta página.</p>
+    {% endif %}
   </div>
 {% endblock %}

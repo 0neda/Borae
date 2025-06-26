@@ -27,7 +27,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ["ROLE_USUARIO"];
 
     /**
      * @var string The hashed password

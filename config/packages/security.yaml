@@ -34,8 +34,15 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/eventos/gerenciar, roles: ROLE_EMPRESA }
+    # Seção de administração
+    # - { path: ^/admin, roles: ROLE_ADMIN } # Desativado temporariamente para testar os cargos
+    # Seção dos eventos
+    - path: ^/eventos/gerenciar
+      roles: ["ROLE_EMPRESA", "ROLE_ADMIN"]
+    - path: ^/eventos/criar
+      roles: ["ROLE_EMPRESA", "ROLE_ADMIN"]
+    - path: ^/eventos/[^/]+/editar
+      roles: ["ROLE_EMPRESA", "ROLE_ADMIN"]
 
 when@test:
   security:
