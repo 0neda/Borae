@@ -1,4 +1,16 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="form-group">{{ form_label(form.nome) }}
+  {{ form_widget(form.nome) }}
+  {{ form_errors(form.nome) }}</div>
+
+<div class="form-group">{{ form_label(form.data_inicio) }}
+  {{ form_widget(form.data_inicio) }}
+  {{ form_errors(form.data_inicio) }}</div>
+
+<div class="form-group">{{ form_label(form.hora_inicio) }}
+  {{ form_widget(form.hora_inicio) }}
+  {{ form_errors(form.hora_inicio) }}</div>
+
+{{ form_widget(form._token) }}
+<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form, { render_rest: false }) }}

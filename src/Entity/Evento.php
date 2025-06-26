@@ -134,4 +134,9 @@ class Evento
 
         return $this;
     }
+
+    public function deletarEvento(EventoRepository $eventoRepository): void
+    {
+        $eventoRepository->deletarEvento($this);
+    }
 }

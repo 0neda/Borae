@@ -33,11 +33,17 @@ final class EventosController extends AbstractController
     #[Route('/criar', name: 'app_eventos_criar', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $usuario = $this->getUser();
+        if (!$usuario) {
+            throw $this->createAccessDeniedException('Você precisa estar logado para criar um evento.');
+        }
+
         $evento = new Evento();
         $form = $this->createForm(EventoForm::class, $evento);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $evento->setCriador($this->getUser());
             $entityManager->persist($evento);
             $entityManager->flush();
 
@@ -58,9 +64,13 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/editar', name: 'app_eventos_editar', methods: ['GET', 'POST'])]
+    #[Route('/editar/{id}', name: 'app_eventos_editar', methods: ['GET', 'POST'])]
     public function edit(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() !== $evento->getCriador()) {
+            throw $this->createAccessDeniedException('Você não tem permissão para editar este evento.');
+        }
+
         $form = $this->createForm(EventoForm::class, $evento);
         $form->handleRequest($request);
 
@@ -76,10 +86,14 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_eventos_deletar', methods: ['POST'])]
+    #[Route('/deletar/{id}', name: 'app_eventos_deletar', methods: ['POST'])]
     public function delete(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $evento->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->getUser() !== $evento->getCriador()) {
+            throw $this->createAccessDeniedException('Você não tem permissão para deletar este evento.');
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $evento->getId(), $request->request->get('_token'))) {
             $entityManager->remove($evento);
             $entityManager->flush();
         }

@@ -27,6 +27,10 @@
           <td>
             <a href="{{ path('app_eventos_mostrar', { id: evento.id }) }}">show</a>
             <a href="{{ path('app_eventos_editar', { id: evento.id }) }}">edit</a>
+            <form method="post" action="{{ path('app_eventos_deletar', { id: evento.id }) }}" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja deletar?')">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}" />
+              <button type="submit" class="btn btn-error">X</button>
+            </form>
           </td>
         </tr>
       {% else %}

@@ -17,10 +17,6 @@ class EventoForm extends AbstractType
             ->add('nome')
             ->add('data_inicio')
             ->add('hora_inicio')
-            ->add('criador', EntityType::class, [
-                'class' => Usuario::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 
