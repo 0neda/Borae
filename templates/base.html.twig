@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title>
-      {% block title %}
-        Boraê!
+      Boraê! -{% block title %}
+
       {% endblock %}
     </title>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
@@ -18,7 +18,7 @@
       {{ vite_entry_script_tags('app') }}
     {% endblock %}
   </head>
-  <body>
+  <body class="bg-gradient-to-br from-slate-900 via-fuchsia-900 to-red-900">
     <div class="navbar bg-base-100 shadow-md px-10">
       <div class="navbar-start">
         <div class="dropdown">
@@ -28,7 +28,7 @@
           </div>
 
           <!-- Menu dropdown (para mobile) -->
-          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+          <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
             <li>
               <a>Eventos</a>
               <ul class="p-2">
@@ -51,7 +51,7 @@
       <div class="navbar-center hidden lg:flex">
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
-          <ul tabindex="0" class="dropdown-content menu bg-base-100/10 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+          <ul tabindex="0" class="dropdown-content menu bg-base-100/50 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
             <li>
               <a href="{{ path('app_eventos_listar') }}">Lista de eventos</a>
             </li>
@@ -78,7 +78,7 @@
                   <img alt="Avatar de {{ app.user.nome }}" src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true" class="w-full h-full object-cover" />
                 </div>
               </div>
-              <ul tabindex="0" class="dropdown-content menu bg-base-100/10 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
+              <ul tabindex="0" class="dropdown-content menu bg-base-100/50 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
                 <div class="mb-2 space-x-1">
                   <span>Bem vindo,</span><span class="font-bold">{{ app.user.nome }}!</span>
                 </div>

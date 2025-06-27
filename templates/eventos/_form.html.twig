@@ -1,16 +1,40 @@
 {{ form_start(form) }}
-<div class="form-group">{{ form_label(form.nome) }}
-  {{ form_widget(form.nome) }}
-  {{ form_errors(form.nome) }}</div>
+<div class="grid grid-cols-2 gap-2 justify-center items-center">
+  <div class="form-group input">{{ form_label(form.nome) }}
+    {{ form_widget(form.nome) }}
+    {{ form_errors(form.nome) }}</div>
 
-<div class="form-group">{{ form_label(form.data_inicio) }}
-  {{ form_widget(form.data_inicio) }}
-  {{ form_errors(form.data_inicio) }}</div>
+  <div class="form-group input">{{ form_label(form.data_inicio) }}
+    {{ form_widget(form.data_inicio) }}
+    {{ form_errors(form.data_inicio) }}</div>
 
-<div class="form-group">{{ form_label(form.hora_inicio) }}
-  {{ form_widget(form.hora_inicio) }}
-  {{ form_errors(form.hora_inicio) }}</div>
+  <div class="form-group input">{{ form_label(form.hora_inicio) }}
+    {{ form_widget(form.hora_inicio) }}
+    {{ form_errors(form.hora_inicio) }}</div>
 
-{{ form_widget(form._token) }}
-<button class="btn">{{ button_label|default('Save') }}</button>
+  <div class="form-group input">{{ form_label(form.endereco) }}
+    {{ form_widget(form.endereco) }}
+    {{ form_errors(form.endereco) }}</div>
+
+  <!-- Categoria -->
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text text-white font-medium">
+        <i class="ph ph-tag mr-2"></i>
+        Categoria do evento
+      </span>
+    </label>
+    {{ form_widget(form.categoria, { attr: { class: 'select select-bordered bg-white/20 border-white/30 text-white focus:border-primary/50 focus:bg-white/25' } }) }}
+    {% if form_errors(form.categoria) %}
+      <label class="label">
+        <span class="label-text-alt text-error">
+          <i class="ph ph-warning-circle mr-1"></i>
+          {{ form_errors(form.categoria) }}
+        </span>
+      </label>
+    {% endif %}
+  </div>
+  {{ form_widget(form._token) }}
+</div>
+<button class="btn btn-success mt-4">{{ button_label|default('Criar') }}</button>
 {{ form_end(form, { render_rest: false }) }}

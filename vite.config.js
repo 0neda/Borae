@@ -6,11 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 // import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [
-    /* react(), // if you're using React */
-    tailwindcss(),
-    symfonyPlugin(),
-  ],
+  plugins: [vue(), tailwindcss(), symfonyPlugin()],
   build: {
     rollupOptions: {
       input: {

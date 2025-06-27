@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Evento;
 use App\Entity\Usuario;
+use App\Enums\CategoriaEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,6 +19,16 @@ class EventoForm extends AbstractType
             ->add('nome')
             ->add('data_inicio')
             ->add('hora_inicio')
+            ->add('endereco')
+            ->add('categoria', EnumType::class, [
+                'class' => CategoriaEnum::class,
+                'choice_label' => function (CategoriaEnum $choice) {
+                    return $choice->getCategoria();
+                },
+                'placeholder' => 'Selecione uma categoria',
+                'multiple' => false,
+                'expanded' => false,
+            ])
         ;
     }
 

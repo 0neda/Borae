@@ -1,41 +1,5 @@
-{% extends 'base.html.twig' %}
+{% extends 'eventos/index.html.twig' %}
 
 {% block title %}
-  Evento index
-{% endblock %}
-
-{% block body %}
-  <h1>Gerenciar eventos</h1>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Nome</th>
-        <th>Data_inicio</th>
-        <th>Hora_inicio</th>
-        <th>actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for evento in eventos %}
-        <tr>
-          <td>{{ evento.id }}</td>
-          <td>{{ evento.nome }}</td>
-          <td>{{ evento.dataInicio ? evento.dataInicio|date('Y-m-d') : '' }}</td>
-          <td>{{ evento.horaInicio ? evento.horaInicio|date('H:i:s') : '' }}</td>
-          <td>
-            <a href="{{ path('app_eventos_mostrar', { id: evento.id }) }}">show</a>
-            <a href="{{ path('app_eventos_editar', { id: evento.id }) }}">edit</a>
-          </td>
-        </tr>
-      {% else %}
-        <tr>
-          <td colspan="5">no records found</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <a href="{{ path('app_eventos_criar') }}">Create new</a>
+  Meus eventos
 {% endblock %}

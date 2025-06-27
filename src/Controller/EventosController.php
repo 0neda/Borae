@@ -25,7 +25,7 @@ final class EventosController extends AbstractController
     #[Route('/gerenciar', name: 'app_eventos_gerenciar', methods: ['GET'])]
     public function manage(EventoRepository $eventoRepository): Response
     {
-        return $this->render('eventos/index.html.twig', [
+        return $this->render('eventos/gerenciar.html.twig', [
             'eventos' => $eventoRepository->findByCriador($this->getUser()),
         ]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enums\CategoriaEnum;
 use App\Repository\EventoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +27,15 @@ class Evento
     #[ORM\ManyToOne(inversedBy: 'eventos')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $criador = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $endereco = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descricao = null;
+
+    #[ORM\Column(enumType: CategoriaEnum::class)]
+    private ?CategoriaEnum $categoria = null;
 
     public function getId(): ?int
     {
@@ -138,5 +148,44 @@ class Evento
     public function deletarEvento(EventoRepository $eventoRepository): void
     {
         $eventoRepository->deletarEvento($this);
+    }
+
+    public function getEndereco(): ?string
+    {
+        return $this->endereco;
+    }
+
+    public function setEndereco(string $endereco): static
+    {
+        $this->endereco = $endereco;
+
+        return $this;
+    }
+
+    public function getDescricao(): ?string
+    {
+        return $this->descricao;
+    }
+
+    public function setDescricao(?string $descricao): static
+    {
+        $this->descricao = $descricao;
+
+        return $this;
+    }
+
+    /**
+     * @return CategoriaEnum|null
+     */
+    public function getCategoria(): ?CategoriaEnum
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?CategoriaEnum $categoria): static
+    {
+        $this->categoria = $categoria;
+
+        return $this;
     }
 }
