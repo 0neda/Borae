@@ -1,156 +1,151 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  Lista de Eventos
+	Lista de Eventos
 {% endblock %}
 
 {% block body %}
-  <!-- Header com filtros e busca -->
-  <div class="w-full max-w-7xl mx-auto mb-8">
-    <div class="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-xl">
-      <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
-        <!-- Título e localização -->
-        <div class="text-center lg:text-left">
-          <h1 class="text-3xl font-bold text-white mb-2">
-            <i class="ph ph-map-pin-line mr-2"></i>
-            {{ block('title') }}
-          </h1>
-          <p class="text-white/80 text-sm">
-            <i class="ph ph-navigation-arrow mr-1"></i>
-            Descubra eventos na sua região!
-          </p>
-        </div>
+	<!-- Header com filtros e busca -->
+	<div class="w-full max-w-7xl mx-auto mb-8">
+		<div class="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-6 shadow-xl">
+			<div
+				class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+				<!-- Título e localização -->
+				<div class="text-center lg:text-left">
+					<h1 class="text-3xl font-bold text-white mb-2">
+						<i class="ph ph-map-pin-line mr-2"></i>
+						{{ block('title') }}
+					</h1>
+					<p class="text-white/80 text-sm">
+						<i class="ph ph-navigation-arrow mr-1"></i>
+						Descubra eventos na sua região!
+					</p>
+				</div>
+			</div>
+		</div>
 
-        <!--    DESATIVADOS TEMPORARIAMENTE! Filtros por categoria 
-        <div class="flex flex-wrap gap-2">
-          <button class="btn btn-sm bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md text-white">
-            <i class="ph ph-clock mr-1"></i>
-            Hoje
-          </button>
-          <button class="btn btn-sm bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md text-white">
-            <i class="ph ph-calendar-check mr-1"></i>
-            Esta semana
-          </button>
-          <button class="btn btn-sm bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md text-white">
-            <i class="ph ph-heart mr-1"></i>
-            Meus favoritos
-          </button>
-        </div>    -->
-      </div>
-    </div>
-  </div>
+		<!-- Grid de eventos -->
+		<div class="w-full max-w-7xl mx-auto">
+			{% if eventos is not empty %}
+				<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+					{% for evento in eventos %}
+						<div
+							class="group relative bg-white/15 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-xl hover:shadow-2xl hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+							<!-- Header do evento -->
+							<div class="relative p-6 pb-4">
+								<div class="flex items-start justify-between mb-4">
+									<div class="flex-1">
+										<h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-100 transition-colors">{{ evento.nome }}</h3>
+									</div>
+									<!-- Badge de categoria -->
+									<div class="ml-3">
+										{% if evento.categoria.getCategoria() == 'Cultural' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/30 text-green-100 border border-green-400/30">Cultural</span>
+										{% elseif evento.categoria.getCategoria() == 'Esportivo' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/40 text-red-100 border border-red-400/40">Esportivo</span>
+										{% elseif evento.categoria.getCategoria() == 'Musical' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/30 text-purple-100 border border-purple-400/30">Musical</span>
+										{% elseif evento.categoria.getCategoria() == 'Tecnológico' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-sky-500/30 text-sky-100 border border-sky-400/30">Tecnológico</span>
+										{% elseif evento.categoria.getCategoria() == 'Educativo' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500/40 text-teal-100 border border-teal-400/40">Educativo</span>
+										{% elseif evento.categoria.getCategoria() == 'Social' %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-black/30 text-white border border-black/30">Social</span>
+										{% else %}
+											<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-neutral-500/30 text-neutral-400 border border-neutral-400/30">{{ evento.categoria ? evento.categoria.getCategoria()|capitalize:'Outros' }}</span>
+										{% endif %}
+									</div>
+								</div>
 
-  <!-- Grid de eventos -->
-  <div class="w-full max-w-7xl mx-auto">
-    {% if eventos is not empty %}
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {% for evento in eventos %}
-          <div class="group relative bg-white/15 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-xl hover:shadow-2xl hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
-            <!-- Header do evento -->
-            <div class="relative p-6 pb-4">
-              <div class="flex items-start justify-between mb-4">
-                <div class="flex-1">
-                  <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-100 transition-colors">{{ evento.nome }}</h3>
-                </div>
-                <!-- Badge de categoria -->
-                <div class="ml-3">
-                  {% if evento.categoria.getCategoria() == 'Cultural' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/30 text-green-100 border border-green-400/30">Cultural</span>
-                  {% elseif evento.categoria.getCategoria() == 'Esportivo' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/40 text-red-100 border border-red-400/40">Esportivo</span>
-                  {% elseif evento.categoria.getCategoria() == 'Musical' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/30 text-purple-100 border border-purple-400/30">Musical</span>
-                  {% elseif evento.categoria.getCategoria() == 'Tecnológico' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-sky-500/30 text-sky-100 border border-sky-400/30">Tecnológico</span>
-                  {% elseif evento.categoria.getCategoria() == 'Educativo' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-500/40 text-teal-100 border border-teal-400/40">Educativo</span>
-                  {% elseif evento.categoria.getCategoria() == 'Social' %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-black/30 text-white border border-black/30">Social</span>
-                  {% else %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-neutral-500/30 text-neutral-400 border border-neutral-400/30">{{ evento.categoria ? evento.categoria.getCategoria()|capitalize:'Outros' }}</span>
-                  {% endif %}
-                </div>
-              </div>
+								<!-- Data e hora -->
+								<div class="flex items-center gap-4 mb-4">
+									<div class="flex items-center text-white/90">
+										<div class="bg-white/20 rounded-lg p-3 mr-3">
+											<i class="ph ph-calendar-dots text-xl"></i>
+										</div>
+										<div>
+											<p class="text-sm font-medium">{{ evento.dataInicio ? evento.dataInicio|date('d/m/Y') : 'Data não definida' }}</p>
+											<p class="text-xs text-white/70">{{ evento.dataInicio ? evento.dataInicio|date('H:i') : 'Horário não definido' }}</p>
+										</div>
+									</div>
+								</div>
 
-              <!-- Data e hora -->
-              <div class="flex items-center gap-4 mb-4">
-                <div class="flex items-center text-white/90">
-                  <div class="bg-white/20 rounded-lg p-3 mr-3">
-                    <i class="ph ph-calendar-dots text-xl"></i>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium">{{ evento.dataInicio ? evento.dataInicio|date('d/m/Y') : 'Data não definida' }}</p>
-                    <p class="text-xs text-white/70">{{ evento.dataInicio ? evento.dataInicio|date('H:i') : 'Horário não definido' }}</p>
-                  </div>
-                </div>
-              </div>
+								<!-- Endereço -->
+								<div class="flex items-center text-white/80 mb-4">
+									<i class="ph ph-map-pin mr-2"></i>
+									<span class="text-sm">{{ evento.endereco ? evento.endereco|capitalize:'Endereço a ser definido' }}</span>
+								</div>
 
-              <!-- Endereço -->
-              <div class="flex items-center text-white/80 mb-4">
-                <i class="ph ph-map-pin mr-2"></i>
-                <span class="text-sm">{{ evento.endereco ? evento.endereco|capitalize:'Endereço a ser definido' }}</span>
-              </div>
+								<!-- FINALIZAR: Participantes/Hype -->
+								<div class="flex items-center justify-between text-sm text-white/70 mb-4">
+									<div class="flex items-center gap-4">
+										<span class="flex items-center">
+											<i class="ph ph-users mr-1"></i>
+											32 interessados
+										</span>
+										<span class="flex items-center">
+											<i class="ph ph-map-pin-area mr-1"></i>
+											2.5km
+										</span>
+									</div>
+								</div>
+							</div>
 
-              <!-- FINALIZAR: Participantes/Hype -->
-              <div class="flex items-center justify-between text-sm text-white/70 mb-4">
-                <div class="flex items-center gap-4">
-                  <span class="flex items-center">
-                    <i class="ph ph-users mr-1"></i>
-                    32 interessados
-                  </span>
-                  <span class="flex items-center">
-                    <i class="ph ph-map-pin-area mr-1"></i>
-                    2.5km
-                  </span>
-                </div>
-              </div>
-            </div>
+							<!-- Botões de ação do evento -->
+							<div class="px-6 pb-6">
+								<div class="flex gap-2">
+									<a href="{{ path('app_eventos_mostrar', { id: evento.id }) }}" class="btn btn-ghost flex-1 bg-white/30 hover:bg-white/50 shadow-lg hover:shadow-white/30 border-white/30 text-white">
+										<i class="ph ph-eye mr-1"></i>
+										Ver detalhes
+									</a>
 
-            <!-- Botões de ação do evento -->
-            <div class="px-6 pb-6">
-              <div class="flex gap-2">
-                <a href="{{ path('app_eventos_mostrar', { id: evento.id }) }}" class="btn btn-ghost flex-1 bg-white/30 hover:bg-white/50 shadow-lg hover:shadow-white/30 border-white/30 text-white">
-                  <i class="ph ph-eye mr-1"></i>
-                  Ver detalhes
-                </a>
+									<!-- Botões de ação para admins/empresas -->
+									{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
+										<div class="flex gap-1">
+											<a href="{{ path('app_eventos_editar', { id: evento.id }) }}" class="btn btn-square bg-warning/20 shadow-lg hover:shadow-warning/30 hover:bg-warning/30 border border-warning/30 text-white">
+												<i class="ph ph-note-pencil"></i>
+											</a>
+											<form method="post" action="{{ path('app_eventos_deletar', { id: evento.id }) }}" onsubmit="return confirm('Tem certeza que deseja deletar este evento?')" class="inline">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}"/>
+												<button type="submit" class="btn btn-square shadow-lg hover:shadow-error/30 bg-error/30 hover:bg-error/50 border border-error/30 text-white">
+													<i class="ph ph-trash"></i>
+												</button>
+											</form>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<!-- Mensagem de nenhum evento encontrado -->
+				<div class="text-center py-16">
+					<div class="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-12 max-w-md mx-auto">
+						<div class="text-6xl mb-4">🎭</div>
+						<h3 class="text-2xl font-bold text-white mb-4">Nenhum evento encontrado</h3>
+						<p class="text-white/70 mb-6">Não há eventos na sua região no momento.</p>
+						{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
+							<a href="{{ path('app_eventos_criar') }}" class="btn btn-primary bg-primary/30 shadow-lg hover:shadow-primary/30 hover:bg-primary/50 border-primary/30 text-white">
+								<i class="ph ph-plus mr-2"></i>
+								Criar evento
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			{% endif %}
 
-                <!-- Botões de ação para admins/empresas -->
-                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
-                  <div class="flex gap-1">
-                    <a href="{{ path('app_eventos_editar', { id: evento.id }) }}" class="btn btn-square bg-warning/20 shadow-lg hover:shadow-warning/30 hover:bg-warning/30 border border-warning/30 text-white"><i class="ph ph-note-pencil"></i></a>
-                    <form method="post" action="{{ path('app_eventos_deletar', { id: evento.id }) }}" onsubmit="return confirm('Tem certeza que deseja deletar este evento?')" class="inline">
-                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}" />
-                      <button type="submit" class="btn btn-square shadow-lg hover:shadow-error/30 bg-error/30 hover:bg-error/50 border border-error/30 text-white"><i class="ph ph-trash"></i></button>
-                    </form>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <!-- Mensagem de nenhum evento encontrado -->
-      <div class="text-center py-16">
-        <div class="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-12 max-w-md mx-auto">
-          <div class="text-6xl mb-4">🎭</div>
-          <h3 class="text-2xl font-bold text-white mb-4">Nenhum evento encontrado</h3>
-          <p class="text-white/70 mb-6">Não há eventos na sua região no momento.</p>
-          {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
-            <a href="{{ path('app_eventos_criar') }}" class="btn btn-primary bg-primary/30 shadow-lg hover:shadow-primary/30 hover:bg-primary/50 border-primary/30 text-white">
-              <i class="ph ph-plus mr-2"></i>
-              Criar evento
-            </a>
-          {% endif %}
-        </div>
-      </div>
-    {% endif %}
+			<!-- Botão flutuante para criar evento -->
+			{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
+				<div x-data="{ aberto: false }">
+					<button @click="aberto = true" class="btn btn-circle btn-xl fixed bottom-8 right-8 z-50">
+						<i class="ph ph-plus text-2xl"></i>
+					</button>
 
-    <!-- Botão flutuante para criar evento -->
-    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
-      <div class="fixed bottom-8 right-8 z-50">
-        <a href="{{ path('app_eventos_criar') }}" class="btn btn-circle btn-lg bg-blue-500/80 hover:bg-blue-500 border-blue-400/50 text-white shadow-2xl hover:shadow-blue-500/25 backdrop-blur-sm"><i class="ph ph-plus text-2xl"></i></a>
-      </div>
-    {% endif %}
-  </div>
-{% endblock %}
+					<div x-show="aberto" class="flex justify-center items-center fixed inset-0 bg-black/50 z-50" @click="aberto = false">
+						<div class="modal-box">alex</div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	{% endblock %}
