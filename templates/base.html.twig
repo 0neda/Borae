@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 	<head>
 		<meta charset="UTF-8"/>
 		<title>
@@ -9,6 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
 		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
 		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css"/>
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.css"/>
 		{% block stylesheets %}
 			{{ vite_entry_link_tags('app') }}
 		{% endblock %}
@@ -18,7 +19,7 @@
 			{{ vite_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
-	<body class="bg-gradient-to-br from-slate-900 via-fuchsia-900 to-red-900">
+	<body class="min-h-screen bg-linear-to-br from-purple-200 via-violet-400 to-indigo-600">
 		<div class="navbar bg-base-100 shadow-md px-10">
 			<div class="navbar-start">
 				<div class="dropdown">
@@ -102,20 +103,17 @@
 				{% endif %}
 			</div>
 		</div>
-		<div class="flex flex-col justify-center items-center p-10 gap-2">
-			{% for category, messages in app.flashes %}
-				{% for message in messages %}
-					<div class="toast toast-center">
-						<div class="alert {{ category == 'error' ? 'alert-error' : category == 'warning' ? 'alert-warning' : category == 'success' ? 'alert-success' : 'alert-info' }}">
-							<div class="flex items-center gap-2">
-								<i class="text-xl {{ category == 'error' ? 'ph ph-x-circle' : category == 'warning' ? 'ph ph-warning-circle' : category == 'success' ? 'ph ph-check-circle' : category == 'info' ? 'ph ph-info' : 'ph ph-dots-three-circle' }}"></i>
-								<span>{{ message }}</span>
-							</div>
-						</div>
-					</div>
+
+		<div class="flex flex-col justify-center items-center p-10 gap-2"> {% block body %}{% endblock %}
+			</div>
+
+
+			<div class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
+				{% for category, messages in app.flashes %}
+					{% for message in messages %}
+						<twig:Alerta type="{{category}}" message="{{message}}"/>
+					{% endfor %}
 				{% endfor %}
-			{% endfor %}
-			{% block body %}{% endblock %}
-		</div>
-	</body>
-</html>
+			</div>
+		</body>
+	</html>
