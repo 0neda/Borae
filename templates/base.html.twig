@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 	<head>
-		<meta charset="UTF-8"/>
+		<meta charset="UTF-8" />
 		<title>
 			Boraê! -
 			{% block title %}{% endblock %}
 		</title>
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css"/>
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.css"/>
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.css" />
 		{% block stylesheets %}
 			{{ vite_entry_link_tags('app') }}
-		{% endblock %}
-
-		<script src="//unpkg.com/alpinejs" defer></script>
-		{% block javascripts %}
-			{{ vite_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
 	<body class="min-h-screen bg-linear-to-br from-purple-200 via-violet-400 to-indigo-600">
@@ -30,7 +25,8 @@
 					</div>
 
 					<!-- Menu dropdown (para mobile) -->
-					<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+					<ul tabindex="0"
+						class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
 						<li>
 							<a>Eventos</a>
 							<ul class="p-2">
@@ -46,14 +42,17 @@
 						</li>
 					</ul>
 				</div>
-				<a href="{{ path('borae_inicio') }}"><img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;"/></a>
+				<a href="{{ path('borae_inicio') }}">
+					<img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;" />
+				</a>
 			</div>
 
 			<!-- Menu centralizado (telas maiores) -->
 			<div class="navbar-center hidden lg:flex">
 				<div class="dropdown">
 					<div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
-					<ul tabindex="0" class="dropdown-content menu bg-base-100/50 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+					<ul tabindex="0"
+						class="dropdown-content menu bg-base-100/50 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
 						<li>
 							<a href="{{ path('borae_eventos_lista') }}">Lista de eventos</a>
 						</li>
@@ -77,25 +76,32 @@
 						<div class="dropdown dropdown-end">
 							<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
 								<div class="w-10 rounded-full outline-2 outline-primary outline-offset-2">
-									<img alt="Avatar de {{ app.user.nome }}" src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true" class="w-full h-full object-cover"/>
+									<img alt="Avatar de {{ app.user.nome }}"
+										src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true"
+										class="w-full h-full object-cover" />
 								</div>
 							</div>
-							<ul tabindex="0" class="dropdown-content menu bg-base-100/50 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
+							<ul tabindex="0"
+								class="dropdown-content menu bg-base-100/50 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
 								<div class="mb-2 space-x-1">
 									<span>Bem vindo,</span>
 									<span class="font-bold">{{ app.user.nome }}!</span>
 								</div>
 								{% if is_granted('ROLE_ADMIN') %}
 									<li>
-										<a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white" href="{{ path('borae_admin') }}">
+										<a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white"
+											href="{{ path('borae_admin') }}">
 											<i class="ph ph-star-four text-xl"></i>
-											Administração</a>
+											Administração
+										</a>
 									</li>
 								{% endif %}
 								<li>
-									<a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white" href="{{ path('borae_sair') }}">
+									<a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white"
+										href="{{ path('borae_sair') }}">
 										<i class="ph ph-sign-out text-xl"></i>
-										Sair</a>
+										Sair
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -104,16 +110,22 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col justify-center items-center p-10 gap-2"> {% block body %}{% endblock %}
-			</div>
+		<div class="flex flex-col justify-center items-center p-10 gap-2">
+			{% block body %}
+			{% endblock %}
+		</div>
 
 
-			<div class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
-				{% for category, messages in app.flashes %}
-					{% for message in messages %}
-						<twig:Alerta type="{{category}}" message="{{message}}"/>
-					{% endfor %}
+		<div class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
+			{% for category, messages in app.flashes %}
+				{% for message in messages %}
+					<twig:Alerta type="{{ category }}" message="{{ message }}" />
 				{% endfor %}
-			</div>
-		</body>
-	</html>
+			{% endfor %}
+		</div>
+
+		{% block javascripts %}
+			{{ vite_entry_script_tags('app') }}
+		{% endblock %}
+	</body>
+</html>

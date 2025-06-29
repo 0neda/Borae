@@ -1,21 +1,32 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-  Cadastre-se!
+	Cadastre-se!
 {% endblock %}
 
 {% block body %}
-  <h1>Cadastre-se!</h1>
+	<h1>Cadastre-se!</h1>
 
-  {{ form_errors(formCadastro) }}
+	{{ form_errors(formCadastro) }}
 
-  {{ form_start(formCadastro) }}
-  {{ form_row(formCadastro.usuario) }}
-  {{ form_row(formCadastro.email) }}
-  {{ form_row(formCadastro.nome) }}
-  {{ form_row(formCadastro.telefone) }}
-  {{ form_row(formCadastro.plainPassword, { label: 'Senha' }) }}
+	{{ form_start(formCadastro) }}
+	{{ form_row(formCadastro.usuario) }}
+	{{ form_row(formCadastro.email) }}
+	{{ form_row(formCadastro.plainPassword, { label: 'Senha' }) }}
 
-  <button type="submit" class="btn">Cadastrar</button>
-  {{ form_end(formCadastro) }}
+		{{ form_row(formCadastro.telefone, {
+			label: 'Telefone',
+			attr: {
+				'x-data': '',
+				'x-mask': '(99) 99999-9999',
+				'placeholder': '(XX) XXXXX-XXXX',
+				'pattern': '\(\d{2}\) \d{5}-\d{4}',
+				'title': 'Digite um telefone válido, ex: (99) 99999-9999'
+			}
+		}) }}
+
+	{{ form_row(formCadastro.nome) }}
+
+	<button type="submit" class="btn">Cadastrar</button>
+	{{ form_end(formCadastro) }}
 {% endblock %}
