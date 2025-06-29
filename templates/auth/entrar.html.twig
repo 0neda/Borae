@@ -9,7 +9,7 @@
     {% if app.user %}
       <div class="mb-3 flex space-x-2 bg-base-200 px-4 py-2 rounded-xl items-center justify-between shadow-md">
         <span class="">Você está logado como <span class="font-bold">{{ app.user.nome }} ({{ app.user.userIdentifier }})</span></span>
-        <a class="btn btn-md btn-error tooltip tooltip-error" data-tip="Você quer mesmo sair?" href="{{ path('app_logout') }}"><i class="ph ph-sign-out text-lg"></i>Sair</a>
+        <a class="btn btn-md btn-error tooltip tooltip-error" data-tip="Você quer mesmo sair?" href="{{ path('borae_sair') }}"><i class="ph ph-sign-out text-lg"></i>Sair</a>
       </div>
     {% endif %}
 
@@ -17,7 +17,7 @@
       <legend class="fieldset-legend">Faça login no Boraê!</legend>
 
       <label class="label">Usuário</label>
-      <input type="text" value="{{ last_username }}" name="_username" id="username" class="input" placeholder="Digite seu usuário" autocomplete="username" required autofocus />
+      <input type="text" value="{{ ultimo_usuario }}" name="_username" id="username" class="input" placeholder="Digite seu usuário" autocomplete="username" required autofocus />
 
       <label class="label">Senha</label>
       <input type="password" name="_password" id="password" class="input" placeholder="Digite sua senha" autocomplete="current-password" required />

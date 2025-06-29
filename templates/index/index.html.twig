@@ -10,14 +10,14 @@
   <div class="flex flex-col gap-2">
     {% if app.user %}
       Seus cargos são:<ul>{{ app.user.getRolesFormatadas() }}</ul>
-      <form method="post" action="{{ path('app_toggle_admin') }}">
+      <form method="post" action="{{ path('borae_tornar_admin') }}">
         <button type="submit" class="justify-start btn {{ app.user.isAdmin ? 'btn-error' : 'btn-warning' }} w-full">
           <i class="{{ app.user.isAdmin ? 'ph ph-minus-circle' : 'ph ph-shield-star' }} text-xl mr-2"></i>
           {{ app.user.isAdmin ? 'Remover Admin' : 'Tornar-se Admin' }}
         </button>
       </form>
 
-      <form method="post" action="{{ path('app_toggle_empresa') }}">
+      <form method="post" action="{{ path('borae_tornar_empresa') }}">
         <button type="submit" class="btn {{ app.user.isEmpresa ? 'btn-error' : 'btn-primary' }} w-full">
           <i class="{{ app.user.isEmpresa ? 'ph ph-minus-circle' : 'ph ph-building-office' }} text-xl mr-2"></i>
           {{ app.user.isEmpresa ? 'Remover Empresa' : 'Tornar-se Empresa' }}

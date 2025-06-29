@@ -47,6 +47,12 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Evento::class, mappedBy: 'criador', orphanRemoval: true)]
     private Collection $eventos;
 
+    #[ORM\Column]
+    private ?\DateTime $data_criacao = null;
+
+    #[ORM\Column(length: 128)]
+    private ?string $email = null;
+
     public function __construct()
     {
         $this->eventos = new ArrayCollection();
@@ -257,6 +263,30 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
                 $evento->setCriador(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDataCriacao(): ?\DateTime
+    {
+        return $this->data_criacao;
+    }
+
+    public function setDataCriacao(\DateTime $data_criacao): static
+    {
+        $this->data_criacao = $data_criacao;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

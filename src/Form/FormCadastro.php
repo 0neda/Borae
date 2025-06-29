@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationForm extends AbstractType
+class FormCadastro extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -32,7 +32,7 @@ class RegistrationForm extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Sua senha deve ter pelo menos {{ limit }} caracteres',
-                        // max length allowed by Symfony for security reasons
+                        // max length allowed by Symfony for auth reasons
                         'max' => 4096,
                     ]),
                 ],

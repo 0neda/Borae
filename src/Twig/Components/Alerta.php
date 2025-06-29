@@ -15,7 +15,7 @@ class Alerta
         return match ($this->type) {
             'success' => 'ph-check-circle',
             'warning' => 'ph-warning',
-            'error' => 'ph-warning',
+            'error' => 'ph-siren',
             'info' => 'ph-info',
             default => 'ph-dots-three-circle',
         };
@@ -27,7 +27,6 @@ class Alerta
             'success' => 'alert-success',
             'warning' => 'alert-warning',
             'error' => 'alert-error',
-            'info' => 'alert-info',
             default => 'alert-info',
         };
     }

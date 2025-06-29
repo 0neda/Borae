@@ -7,28 +7,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class SecurityController extends AbstractController
+class AuthController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
+    #[Route(path: '/entrar', name: 'borae_entrar')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+        $erro = $authenticationUtils->getLastAuthenticationError();
 
         // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+        $ultimoUsuario = $authenticationUtils->getLastUsername();
 
-        if ($error) {
-            $this->addFlash('error', 'Credenciais inválidas. Verifique seu email e senha.');
+        if ($erro) {
+            $this->addFlash('erro', 'Credenciais inválidas. Verifique seu email e senha.');
         }
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
+        return $this->render('auth/entrar.html.twig', [
+            'ultimo_usuario' => $ultimoUsuario,
+            'erro' => $erro,
         ]);
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
+    #[Route(path: '/sair', name: 'borae_sair')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

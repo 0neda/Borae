@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/eventos')]
 final class EventosController extends AbstractController
 {
-    #[Route(name: 'app_eventos_listar', methods: ['GET'])]
+    #[Route(name: 'borae_eventos_lista', methods: ['GET'])]
     public function index(EventoRepository $eventoRepository): Response
     {
         return $this->render('eventos/index.html.twig', [
@@ -22,7 +22,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/gerenciar', name: 'app_eventos_gerenciar', methods: ['GET'])]
+    #[Route('/gerenciar', name: 'borae_eventos_gerenciar', methods: ['GET'])]
     public function manage(EventoRepository $eventoRepository): Response
     {
         return $this->render('eventos/gerenciar.html.twig', [
@@ -30,7 +30,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/criar', name: 'app_eventos_criar', methods: ['GET', 'POST'])]
+    #[Route('/criar', name: 'borae_eventos_criar', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $usuario = $this->getUser();
@@ -47,7 +47,7 @@ final class EventosController extends AbstractController
             $entityManager->persist($evento);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('borae_eventos_lista', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('eventos/new.html.twig', [
@@ -56,7 +56,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_eventos_mostrar', methods: ['GET'])]
+    #[Route('/{id}', name: 'borae_eventos_mostrar', methods: ['GET'])]
     public function show(Evento $evento): Response
     {
         return $this->render('eventos/show.html.twig', [
@@ -64,7 +64,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/editar/{id}', name: 'app_eventos_editar', methods: ['GET', 'POST'])]
+    #[Route('/editar/{id}', name: 'borae_eventos_editar', methods: ['GET', 'POST'])]
     public function edit(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
         if ($this->getUser() !== $evento->getCriador()) {
@@ -77,7 +77,7 @@ final class EventosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('borae_eventos_lista', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('eventos/edit.html.twig', [
@@ -86,7 +86,7 @@ final class EventosController extends AbstractController
         ]);
     }
 
-    #[Route('/deletar/{id}', name: 'app_eventos_deletar', methods: ['POST'])]
+    #[Route('/deletar/{id}', name: 'borae_eventos_deletar', methods: ['POST'])]
     public function delete(Request $request, Evento $evento, EntityManagerInterface $entityManager): Response
     {
         if ($this->getUser() !== $evento->getCriador()) {
@@ -98,6 +98,6 @@ final class EventosController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_eventos_listar', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('borae_eventos_lista', [], Response::HTTP_SEE_OTHER);
     }
 }

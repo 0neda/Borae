@@ -39,14 +39,14 @@
 								</li>
 								{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
 									<li>
-										<a href="{{ path('app_eventos_gerenciar') }}">Gerenciar eventos</a>
+										<a href="{{ path('borae_eventos_gerenciar') }}">Gerenciar eventos</a>
 									</li>
 								{% endif %}
 							</ul>
 						</li>
 					</ul>
 				</div>
-				<a href="{{ path('app_index') }}"><img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;"/></a>
+				<a href="{{ path('borae_inicio') }}"><img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;"/></a>
 			</div>
 
 			<!-- Menu centralizado (telas maiores) -->
@@ -55,11 +55,11 @@
 					<div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
 					<ul tabindex="0" class="dropdown-content menu bg-base-100/50 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
 						<li>
-							<a href="{{ path('app_eventos_listar') }}">Lista de eventos</a>
+							<a href="{{ path('borae_eventos_lista') }}">Lista de eventos</a>
 						</li>
 						{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
 							<li>
-								<a href="{{ path('app_eventos_gerenciar') }}">Gerenciar eventos</a>
+								<a href="{{ path('borae_eventos_gerenciar') }}">Gerenciar eventos</a>
 							</li>
 						{% endif %}
 					</ul>
@@ -69,8 +69,8 @@
 			<!-- Ações do usuário -->
 			<div class="navbar-end space-x-2">
 				{% if not app.user %}
-					<a class="btn btn-dash" href="{{ path('app_login') }}">Entrar</a>
-					<a class="btn btn-success btn-dash" href="{{ path('app_registro') }}">Registrar</a>
+					<a class="btn btn-dash" href="{{ path('borae_entrar') }}">Entrar</a>
+					<a class="btn btn-success btn-dash" href="{{ path('borae_cadastro') }}">Registrar</a>
 				{% else %}
 					<!-- Menu no avatar do usuário -->
 					<div class="flex gap-2">
@@ -87,13 +87,13 @@
 								</div>
 								{% if is_granted('ROLE_ADMIN') %}
 									<li>
-										<a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white" href="{{ path('app_admin') }}">
+										<a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white" href="{{ path('borae_admin') }}">
 											<i class="ph ph-star-four text-xl"></i>
 											Administração</a>
 									</li>
 								{% endif %}
 								<li>
-									<a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white" href="{{ path('app_logout') }}">
+									<a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white" href="{{ path('borae_sair') }}">
 										<i class="ph ph-sign-out text-xl"></i>
 										Sair</a>
 								</li>

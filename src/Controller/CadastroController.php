@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Usuario;
-use App\Form\RegistrationForm;
+use App\Form\FormCadastro;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-class RegistrationController extends AbstractController
+class CadastroController extends AbstractController
 {
-    #[Route('/registro', name: 'app_registro')]
+    #[Route('/cadastro', name: 'borae_cadastro')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new Usuario();
-        $form = $this->createForm(RegistrationForm::class, $user);
+        $form = $this->createForm(FormCadastro::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -32,11 +32,11 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_index');
+            return $this->redirectToRoute('borae_entrar');
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+        return $this->render('cadastro/cadastro.html.twig', [
+            'formCadastro' => $form,
         ]);
     }
 }

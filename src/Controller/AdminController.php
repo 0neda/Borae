@@ -13,13 +13,13 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 final class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/admin', name: 'borae_admin')]
     public function index(): Response
     {
         return $this->render('admin/index.html.twig', []);
     }
 
-    #[Route('/admin/toggle-admin', name: 'app_toggle_admin', methods: ['POST'])]
+    #[Route('/admin/toggle-admin', name: 'borae_tornar_admin', methods: ['POST'])]
     public function toggleAdmin(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
         /** @var Usuario $user */
@@ -34,10 +34,10 @@ final class AdminController extends AbstractController
         $category = $user->isAdmin() ? 'success' : 'error';
         $this->addFlash($category, $message);
 
-        return $this->redirectToRoute('app_index');
+        return $this->redirectToRoute('borae_inicio');
     }
 
-    #[Route('/admin/toggle-empresa', name: 'app_toggle_empresa', methods: ['POST'])]
+    #[Route('/admin/toggle-empresa', name: 'borae_tornar_empresa', methods: ['POST'])]
     public function toggleEmpresa(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
         /** @var Usuario $user */
@@ -52,7 +52,7 @@ final class AdminController extends AbstractController
         $category = $user->isEmpresa() ? 'success' : 'error';
         $this->addFlash($category, $message);
 
-        return $this->redirectToRoute('app_index');
+        return $this->redirectToRoute('borae_inicio');
     }
 
     private function atualizarSessaoUsuario(Usuario $user, TokenStorageInterface $tokenStorage): void
