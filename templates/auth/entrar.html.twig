@@ -16,10 +16,10 @@
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 shadow-lg">
       <legend class="fieldset-legend">Faça login no Boraê!</legend>
 
-      <label class="label">Usuário</label>
+      <label class="label" for="username">Usuário</label>
       <input type="text" value="{{ ultimo_usuario }}" name="_username" id="username" class="input" placeholder="Digite seu usuário" autocomplete="username" required autofocus />
 
-      <label class="label">Senha</label>
+      <label class="label" for="password">Senha</label>
       <input type="password" name="_password" id="password" class="input" placeholder="Digite sua senha" autocomplete="current-password" required />
       <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}" />
 
