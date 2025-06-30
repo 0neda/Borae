@@ -1,40 +1,166 @@
-{{ form_start(form) }}
-<div class="grid grid-cols-2 gap-2 justify-center items-center">
-  <div class="form-group input">{{ form_label(form.nome) }}
-    {{ form_widget(form.nome) }}
-    {{ form_errors(form.nome) }}</div>
+<div class="w-full flex grow py-8">
+    <div class="container mx-auto px-6">
+        <!-- Header Estiloso -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                Criar Novo Evento
+            </h1>
+            <p class="text-base-content/70">Preencha os detalhes para criar um evento incrível</p>
+        </div>
 
-  <div class="form-group input">{{ form_label(form.data_inicio) }}
-    {{ form_widget(form.data_inicio) }}
-    {{ form_errors(form.data_inicio) }}</div>
+        <!-- Formulário Card -->
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-3xl shadow-2xl p-8">
+                {{ form_start(formEvento, { attr: { class: 'space-y-6' } }) }}
 
-  <div class="form-group input">{{ form_label(form.hora_inicio) }}
-    {{ form_widget(form.hora_inicio) }}
-    {{ form_errors(form.hora_inicio) }}</div>
+                <!-- Grid de Campos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nome do Evento -->
+                    <div class="md:col-span-2">
+                        <div class="form-control">
+                            {{ form_label(formEvento.nome, null, { label_attr: { class: 'label' } }) }}
+                            <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                                <i class="ph ph-calendar text-primary text-xl"></i>
+                                Nome do Evento
+                                <span class="text-error">*</span>
+                            </div>
+                            {{ form_widget(formEvento.nome, {
+                                attr: {
+                                    class: 'input input-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30 text-lg',
+                                    placeholder: 'Ex: Show de Rock, Torneio de Futebol...'
+                                }
+                            }) }}
+                            {{ form_errors(formEvento.nome) }}
+                        </div>
+                    </div>
 
-  <div class="form-group input">{{ form_label(form.endereco) }}
-    {{ form_widget(form.endereco) }}
-    {{ form_errors(form.endereco) }}</div>
+                    <!-- Data de Início -->
+                    <div class="form-control">
+                        <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                            <i class="ph ph-calendar-check text-primary text-xl"></i>
+                            Data do Evento
+                            <span class="text-error">*</span>
+                        </div>
+                        {{ form_widget(formEvento.data_inicio, {
+                            attr: {
+                                class: 'input input-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30'
+                            }
+                        }) }}
+                        {{ form_errors(formEvento.data_inicio) }}
+                    </div>
 
-  <!-- Categoria -->
-  <div class="form-control">
-    <label class="label">
-      <span class="label-text text-white font-medium">
-        <i class="ph ph-tag mr-2"></i>
-        Categoria do evento
-      </span>
-    </label>
-    {{ form_widget(form.categoria, { attr: { class: 'select select-bordered bg-white/20 border-white/30 text-white focus:border-primary/50 focus:bg-white/25' } }) }}
-    {% if form_errors(form.categoria) %}
-      <label class="label">
-        <span class="label-text-alt text-error">
-          <i class="ph ph-warning-circle mr-1"></i>
-          {{ form_errors(form.categoria) }}
-        </span>
-      </label>
-    {% endif %}
-  </div>
-  {{ form_widget(form._token) }}
+                    <!-- Hora de Início -->
+                    <div class="form-control">
+                        <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                            <i class="ph ph-clock text-primary text-xl"></i>
+                            Horário
+                            <span class="text-error">*</span>
+                        </div>
+                        {{ form_widget(formEvento.hora_inicio, {
+                            attr: {
+                                class: 'input input-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30'
+                            }
+                        }) }}
+                        {{ form_errors(formEvento.hora_inicio) }}
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="form-control">
+                        <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                            <i class="ph ph-map-pin text-primary text-xl"></i>
+                            Endereço
+                            <span class="text-error">*</span>
+                        </div>
+                        {{ form_widget(formEvento.endereco, {
+                            attr: {
+                                class: 'input input-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30',
+                                placeholder: 'Rua, número, bairro, cidade...'
+                            }
+                        }) }}
+                        {{ form_errors(formEvento.endereco) }}
+                    </div>
+
+                    <!-- Categoria -->
+                    <div class="form-control">
+                        <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                            <i class="ph ph-tag text-primary text-xl"></i>
+                            Categoria
+                            <span class="text-error">*</span>
+                        </div>
+                        {{ form_widget(formEvento.categoria, {
+                            attr: {
+                                class: 'select select-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30'
+                            }
+                        }) }}
+                        {{ form_errors(formEvento.categoria) }}
+                    </div>
+
+                    <!-- Descrição (se existir) -->
+                    {% if formEvento.descricao is defined %}
+                        <div class="md:col-span-2">
+                            <div class="form-control">
+                                <div class="label-text font-semibold text-lg text-base-content flex items-center gap-2 mb-2">
+                                    <i class="ph ph-note text-primary text-xl"></i>
+                                    Descrição
+                                </div>
+                                {{ form_widget(formEvento.descricao, {
+                                    attr: {
+                                        class: 'textarea textarea-bordered w-full bg-white/20 border-white/30 focus:border-primary focus:bg-white/30 h-32',
+                                        placeholder: 'Descreva os detalhes do seu evento...'
+                                    }
+                                }) }}
+                                {{ form_errors(formEvento.descricao) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Token CSRF -->
+                {{ form_widget(formEvento._token) }}
+
+                <!-- Botões de Ação -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-white/20">
+                    <a href="{{ path('borae_eventos_lista') }}"
+                       class="btn btn-ghost bg-white/10 border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300">
+                        <i class="ph ph-arrow-left mr-2"></i>
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="btn btn-primary bg-gradient-to-r from-primary to-secondary border-0 shadow-lg hover:shadow-primary/50 transition-all duration-300 px-8">
+                        <i class="ph ph-calendar-plus mr-2"></i>
+                        {{ button_label|default('Criar Evento') }}
+                    </button>
+                </div>
+
+                {{ form_end(formEvento, { render_rest: false }) }}
+            </div>
+        </div>
+
+        <!-- Cards de Dicas -->
+        <div class="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-br from-info/10 to-info/5 border border-info/20 rounded-2xl p-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="ph ph-lightbulb text-info text-xl"></i>
+                    <h3 class="font-semibold text-info">Dica</h3>
+                </div>
+                <p class="text-sm text-base-content/70">Use um nome atrativo e descritivo para seu evento</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-success/10 to-success/5 border border-success/20 rounded-2xl p-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="ph ph-map-pin text-success text-xl"></i>
+                    <h3 class="font-semibold text-success">Local</h3>
+                </div>
+                <p class="text-sm text-base-content/70">Seja específico com o endereço para facilitar o acesso</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-warning/10 to-warning/5 border border-warning/20 rounded-2xl p-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <i class="ph ph-clock text-warning text-xl"></i>
+                    <h3 class="font-semibold text-warning">Horário</h3>
+                </div>
+                <p class="text-sm text-base-content/70">Considere o tempo de deslocamento dos participantes</p>
+            </div>
+        </div>
+    </div>
 </div>
-<button class="btn btn-success mt-4">{{ button_label|default('Criar') }}</button>
-{{ form_end(form, { render_rest: false }) }}

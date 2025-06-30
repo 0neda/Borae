@@ -1,48 +1,41 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
-  themes: borae-light --default;
+    themes: borae-light --default;
 }
 
 @plugin "daisyui/theme" {
-  name: "borae-light";
-  default: true;
-  prefersdark: false;
-  color-scheme: "light";
-  --color-base-100: oklch(98% 0 0);
-  --color-base-200: oklch(94% 0 0);
-  --color-base-300: oklch(86% 0 0);
-  --color-base-content: oklch(25% 0.02 270);
-  --color-primary: oklch(63% 0.25 300);
-  --color-primary-content: oklch(100% 0 0);
-  --color-secondary: oklch(75% 0.23 340);
-  --color-secondary-content: oklch(100% 0 0);
-  --color-accent: oklch(75% 0.24 70);
-  --color-accent-content: oklch(100% 0 0);
-  --color-neutral: oklch(48% 0.04 280);
-  --color-neutral-content: oklch(100% 0 0);
-  --color-info: oklch(72% 0.22 230);
-  --color-info-content: oklch(100% 0 0);
-  --color-success: oklch(75% 0.24 145);
-  --color-success-content: oklch(100% 0 0);
-  --color-warning: oklch(86% 0.18 85);
-  --color-warning-content: oklch(25% 0.01 270);
-  --color-error: oklch(65% 0.28 25);
-  --color-error-content: oklch(100% 0 0);
-  --radius-selector: 0.25rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.21875rem;
-  --border: 1px;
-  --depth: 1;
-  --noise: 1;
-  --bg-image: url("../images/background-01.webp");
-}
+    name: "borae-light";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(98% 0 0);
+    --color-base-200: oklch(94% 0 0);
+    --color-base-300: oklch(86% 0 0);
+    --color-base-content: oklch(25% 0.02 270);
+    --color-primary: oklch(63% 0.25 300);
+    --color-primary-content: oklch(100% 0 0);
+    --color-secondary: oklch(75% 0.23 340);
+    --color-secondary-content: oklch(100% 0 0);
+    --color-accent: oklch(75% 0.24 70);
+    --color-accent-content: oklch(100% 0 0);
+    --color-neutral: oklch(48% 0.04 280);
+    --color-neutral-content: oklch(100% 0 0);
+    --color-info: oklch(72% 0.22 230);
+    --color-info-content: oklch(100% 0 0);
+    --color-success: oklch(75% 0.24 145);
+    --color-success-content: oklch(100% 0 0);
+    --color-warning: oklch(86% 0.18 85);
+    --color-warning-content: oklch(25% 0.01 270);
+    --color-error: oklch(65% 0.28 25);
+    --color-error-content: oklch(100% 0 0);
+    --radius-selector: 0.25rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.21875rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 1;
 
-.bg-image {
-  background-image: var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }

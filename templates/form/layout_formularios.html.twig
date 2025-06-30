@@ -1,0 +1,66 @@
+{% block form_widget_simple %}
+    {% set type = type|default(attr.type|default('text')) %}
+    {% if type == 'hidden' %}
+        <input
+    type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
+        {% else %}
+        {% set icon = attr.icon ?? null %}
+        <div class="relative group">
+            <div class="flex items-center px-4 py-4 rounded-xl border-2 border-white/30 bg-white/20 backdrop-blur-sm
+                    focus-within:border-primary focus-within:bg-white/40 focus-within:shadow-xl
+                transition-all duration-300 hover:border-white/50 hover:bg-white/30">
+                {% if icon %}
+                    <div class="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mr-3
+                        group-focus-within:bg-primary/20 transition-colors duration-200">
+                        <i class="ph {{ icon }} text-primary"></i>
+                    </div>
+                {% endif %}
+                <input class="flex-1 bg-transparent border-0 outline-0 text-base-content placeholder:text-base-content/50
+                text-lg font-medium" type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}" />
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <div class="alert alert-error shadow-lg mb-4 bg-gradient-to-r from-error/10 to-error/20 border border-error/30">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-error/20 rounded-full flex items-center justify-center">
+                    <i class="ph ph-warning-circle text-error"></i>
+                </div>
+                <div>
+                    {% for error in errors %}
+                        <div class="font-medium text-error">
+                            {{ error.message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block form_help %}
+    {% if help is not empty %}
+        <div class="mt-2 text-sm text-base-content/60 flex items-center gap-2">
+            <i class="ph ph-info text-primary"></i>
+            {{ help }}
+        </div>
+    {% endif %}
+{% endblock %}
+{% block form_label %}
+    {% if label is not same as(false) %}
+        <label class="label mb-2" for="{{ id }}">
+            <span class="label-text font-semibold text-lg text-base-content flex items-center gap-2">
+                {% if attr.icon is defined %}
+                    <i class="ph {{ attr.icon }} text-primary text-xl"></i>
+                {% endif %}
+                {{ label|default(name|humanize) }}
+                {% if required %}
+                    <span class="text-error">
+                        *
+                    </span>
+                {% endif %}
+            </span>
+        </label>
+    {% endif %}
+{% endblock %}

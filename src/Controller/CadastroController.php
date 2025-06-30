@@ -1,42 +1,62 @@
 <?php
 
-namespace App\Controller;
+	namespace App\Controller;
 
-use App\Entity\Usuario;
-use App\Form\FormCadastro;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+	use App\Entity\Usuario;
+	use App\Form\FormCadastro;
+	use Doctrine\ORM\EntityManagerInterface;
+	use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+	use Symfony\Component\HttpFoundation\Request;
+	use Symfony\Component\HttpFoundation\Response;
+	use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+	use Symfony\Component\Routing\Attribute\Route;
 
-class CadastroController extends AbstractController
-{
-    #[Route('/cadastro', name: 'borae_cadastro')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
-        $user = new Usuario();
-        $form = $this->createForm(FormCadastro::class, $user);
-        $form->handleRequest($request);
+	class CadastroController extends AbstractController
+	{
+		#[Route('/cadastro', name : 'borae_cadastro')]
+		public function register(
+			Request $request,
+			UserPasswordHasherInterface $userPasswordHasher,
+			EntityManagerInterface $entityManager,
+		): Response {
+			$user = new Usuario();
+			$form = $this->createForm(FormCadastro::class, $user);
+			$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+			if ($form->isSubmitted() && $form->isValid()) {
+				$senha = $form->get('senhaCrua')->getData();
+				$senhaConf = $form->get('senhaConf')->getData();
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+				if ($senha !== $senhaConf) {
+					$form->get('senhaConf')->addError(
+						new \Symfony\Component\Form\FormError(
+							'As senhas não coincidem.',
+						),
+					);
+				} else {
+					/** @var string $senhaCrua */
+					$senhaCrua = $form->get('senhaCrua')->getData();
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+					// encode the plain password
+					$user->setPassword(
+						$userPasswordHasher->hashPassword($user, $senhaCrua),
+					);
 
-            // do anything else you need here, like send an email
+					$entityManager->persist($user);
+					$entityManager->flush();
 
-            return $this->redirectToRoute('borae_entrar');
-        }
+					// do anything else you need here, like send an email
 
-        return $this->render('cadastro/cadastro.html.twig', [
-            'formCadastro' => $form,
-        ]);
-    }
-}
+					return $this->redirectToRoute('borae_entrar');
+				}
+			} else {
+				foreach ($form->getErrors(true) as $erro) {
+					$this->addFlash('erro', $erro->getMessage());
+				}
+			}
+
+			return $this->render('cadastro/cadastro.html.twig', [
+				'formCadastro' => $form,
+			]);
+		}
+	}

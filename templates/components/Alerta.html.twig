@@ -1,6 +1,5 @@
-<div x-data="{ alertaVisivel: true }" x-show="alertaVisivel" x-init="setTimeout(() => alertaVisivel = false, 3000)" role="alert"
-	class="flex flex-row justify-around items-center h-24 sm:h-12 alert alert-{{ type }} alert-vertical sm:alert-horizontal" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
-	<i class="ph {{ this.getIcon }} text-2xl text-{{ type }}-content"></i>
+<div x-data="{ alertaVisivel: true }" x-show="alertaVisivel" x-init="setTimeout(() => alertaVisivel = false, 3000)" role="alert" class="flex flex-row justify-around items-center h-24 sm:h-12 alert alert-{{ type }} alert-vertical sm:alert-horizontal" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
+	<i class="ph {{ this.getIcon() }} text-2xl text-{{ type }}-content"></i>
 	<span class="ml-2 text-sm font-semibold text-{{ type }}-content">
 		{{ message }}
 	</span>

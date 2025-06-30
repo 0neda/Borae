@@ -1,10 +1,11 @@
 import "./app.css";
 import Alpine from 'alpinejs';
 import mask from '@alpinejs/mask';
+import focus from '@alpinejs/focus'
 
 window.Alpine = Alpine;
 Alpine.plugin(mask);
-console.log("Plugin mask registrado:", Alpine);
+Alpine.plugin(focus)
 Alpine.start();
 
-console.log("Happy coding !!");
+console.log("Boraê Inicializado!");

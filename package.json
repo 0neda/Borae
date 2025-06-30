@@ -11,6 +11,7 @@
         "vite-plugin-symfony": "^8.2"
     },
     "dependencies": {
+        "@alpinejs/focus": "^3.14.9",
         "@alpinejs/mask": "^3.14.9",
         "@tailwindcss/vite": "^4.1.10",
         "alpinejs": "^3.14.9",

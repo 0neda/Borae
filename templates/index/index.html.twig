@@ -1,30 +1,37 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}
-  Início
+    Início
 {% endblock %}
-
 {% block body %}
-  <h1 class="text-3xl font-bold underline">Botões para teste de cargos</h1>
-
-  <div class="flex flex-col gap-2">
-    {% if app.user %}
-      Seus cargos são:<ul>{{ app.user.getRolesFormatadas() }}</ul>
-      <form method="post" action="{{ path('borae_tornar_admin') }}">
-        <button type="submit" class="justify-start btn {{ app.user.isAdmin ? 'btn-error' : 'btn-warning' }} w-full">
-          <i class="{{ app.user.isAdmin ? 'ph ph-minus-circle' : 'ph ph-shield-star' }} text-xl mr-2"></i>
-          {{ app.user.isAdmin ? 'Remover Admin' : 'Tornar-se Admin' }}
-        </button>
-      </form>
-
-      <form method="post" action="{{ path('borae_tornar_empresa') }}">
-        <button type="submit" class="btn {{ app.user.isEmpresa ? 'btn-error' : 'btn-primary' }} w-full">
-          <i class="{{ app.user.isEmpresa ? 'ph ph-minus-circle' : 'ph ph-building-office' }} text-xl mr-2"></i>
-          {{ app.user.isEmpresa ? 'Remover Empresa' : 'Tornar-se Empresa' }}
-        </button>
-      </form>
-    {% else %}
-      <p>Você precisa estar logado para ver esta página.</p>
-    {% endif %}
-  </div>
-{% endblock %}
+    <section class="relative w-full py-20 flex grow items-center justify-center overflow-hidden">
+        <div class="relative z-10 text-center px-6 max-w-6xl mx-auto">
+            <div class="mb-8 transform hover:scale-105 transition-transform duration-500">
+                <img src="/images/logo-02-slogan.webp" alt="Boraê" class="h-32 mx-auto drop-shadow-2xl"></div>
+                <h1 class="text-6xl md:text-8xl text-white mb-6 tracking-tight">
+                    <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-violet-400 bg-clip-text text-transparent font-black">
+                        Conecte-se
+                    </span>
+                    <span class="text-white font-l font-semibold drop-shadow-lg">
+                        aos melhores eventos
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl text-purple-100 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Descubra experiências únicas, conecte-se com pessoas incríveis e crie memórias inesquecíveis!
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="{{ path('borae_eventos_lista') }}" class="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white font-bold rounded-2xl text-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-xs hover:shadow-2xl hover:shadow-purple-500/50">
+                        <span class="relative z-10 flex items-center gap-3">
+                            <i class="ph ph-calendar-plus text-xl"></i>
+                            Explorar Eventos
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </a>
+                    <a href="{{ path('borae_eventos_lista') }}" class="px-8 py-4 bg-white/10 text-white font-semibold rounded-2xl text-lg backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
+                        <i class="ph ph-calendar text-xl"></i>
+                        Anunciar Evento
+                    </a>
+                </div>
+            </div>
+        </section>
+    {% endblock %}
+    

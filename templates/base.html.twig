@@ -1,131 +1,151 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-	<head>
-		<meta charset="UTF-8" />
-		<title>
-			Boraê! -
-			{% block title %}{% endblock %}
-		</title>
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css" />
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.css" />
-		{% block stylesheets %}
-			{{ vite_entry_link_tags('app') }}
-		{% endblock %}
-	</head>
-	<body class="min-h-screen bg-linear-to-br from-purple-200 via-violet-400 to-indigo-600">
-		<div class="navbar bg-base-100 shadow-md px-10">
-			<div class="navbar-start">
-				<div class="dropdown">
-					<div
-						tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-						<!-- Icone do menu mobile -->
-						<i class="ph ph-list text-xl"></i>
-					</div>
-
-					<!-- Menu dropdown (para mobile) -->
-					<ul tabindex="0"
-						class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
-						<li>
-							<a>Eventos</a>
-							<ul class="p-2">
-								<li>
-									<a>Lista de eventos</a>
-								</li>
-								{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
-									<li>
-										<a href="{{ path('borae_eventos_gerenciar') }}">Gerenciar eventos</a>
-									</li>
-								{% endif %}
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<a href="{{ path('borae_inicio') }}">
-					<img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;" />
-				</a>
-			</div>
-
-			<!-- Menu centralizado (telas maiores) -->
-			<div class="navbar-center hidden lg:flex">
-				<div class="dropdown">
-					<div tabindex="0" role="button" class="btn btn-soft btn-primary">Eventos</div>
-					<ul tabindex="0"
-						class="dropdown-content menu bg-base-100/50 rounded-box z-1 w-52 p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
-						<li>
-							<a href="{{ path('borae_eventos_lista') }}">Lista de eventos</a>
-						</li>
-						{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
-							<li>
-								<a href="{{ path('borae_eventos_gerenciar') }}">Gerenciar eventos</a>
-							</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>
-
-			<!-- Ações do usuário -->
-			<div class="navbar-end space-x-2">
-				{% if not app.user %}
-					<a class="btn btn-dash" href="{{ path('borae_entrar') }}">Entrar</a>
-					<a class="btn btn-success btn-dash" href="{{ path('borae_cadastro') }}">Registrar</a>
-				{% else %}
-					<!-- Menu no avatar do usuário -->
-					<div class="flex gap-2">
-						<div class="dropdown dropdown-end">
-							<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-								<div class="w-10 rounded-full outline-2 outline-primary outline-offset-2">
-									<img alt="Avatar de {{ app.user.nome }}"
-										src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true"
-										class="w-full h-full object-cover" />
-								</div>
-							</div>
-							<ul tabindex="0"
-								class="dropdown-content menu bg-base-100/50 rounded-box z-1 min-w-max p-2 shadow-md shadow-black/25 space-y-2 backdrop-blur-sm outline-1 outline-white">
-								<div class="mb-2 space-x-1">
-									<span>Bem vindo,</span>
-									<span class="font-bold">{{ app.user.nome }}!</span>
-								</div>
-								{% if is_granted('ROLE_ADMIN') %}
-									<li>
-										<a class="outline-1 outline-dashed outline-primary text-primary hover:bg-primary hover:outline-solid hover:text-white"
-											href="{{ path('borae_admin') }}">
-											<i class="ph ph-star-four text-xl"></i>
-											Administração
-										</a>
-									</li>
-								{% endif %}
-								<li>
-									<a class="outline-1 outline-dashed outline-error text-error hover:bg-error hover:outline-solid hover:text-white"
-										href="{{ path('borae_sair') }}">
-										<i class="ph ph-sign-out text-xl"></i>
-										Sair
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				{% endif %}
-			</div>
-		</div>
-
-		<div class="flex flex-col justify-center items-center p-10 gap-2">
-			{% block body %}
-			{% endblock %}
-		</div>
-
-
-		<div class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
-			{% for category, messages in app.flashes %}
-				{% for message in messages %}
-					<twig:Alerta type="{{ category }}" message="{{ message }}" />
-				{% endfor %}
-			{% endfor %}
-		</div>
-
-		{% block javascripts %}
-			{{ vite_entry_script_tags('app') }}
-		{% endblock %}
-	</body>
+    <head>
+        <meta charset="UTF-8" />
+        <title>
+            Boraê! -
+            {% block title %}{% endblock %}
+        </title>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.css" />
+        {% block stylesheets %}
+            {{ vite_entry_link_tags('app') }}
+        {% endblock %}
+    </head>
+    <body class="flex flex-col min-h-screen">
+        <!-- Esse é o fundo da página, degradê com animação e a imagem de fundo -->
+        <section id="background" aria-label="Animação de fundo">
+            <div class="absolute -z-1 inset-0 bg-gradient-to-br from-primary to-indigo-950 to-90% from-10%">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            </div>
+            <div class="absolute top-20 left-10 w-72 h-72 bg-violet-500/100 rounded-full blur-[256px] animate-[opacity-100_opacity-0_ease-in-out_2s_infinite] delay-750"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-violet-400/100 rounded-full blur-[256px] animate-pulse delay-1000"></div>
+        </section>
+        <nav id="navegacao" aria-label="Navegação principal">
+            <div class="navbar bg-base-100 shadow-md px-10">
+                <div class="navbar-start">
+                    <div class="dropdown">
+                        <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                            <i class="ph ph-list text-xl"></i><!-- Icone do menu mobile --></div>
+                        <!-- Menu dropdown (para mobile) -->
+                        <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+                            <li>
+                                <a>
+                                    Menu
+                                </a>
+                                <ul class="p-2">
+                                    <li>
+                                        <a href="{{ path('borae_inicio') }}">
+                                            Início
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('borae_eventos_gerenciar') }}">
+                                            Lista de eventos
+                                        </a>
+                                    </li>
+                                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
+                                        <li>
+                                            <a href="{{ path('borae_eventos_gerenciar') }}">
+                                                Gerenciar eventos
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ path('borae_inicio') }}">
+                        <img src="{{ asset('images/logo-01.webp') }}" alt="Logo" style="width: 100px; height: auto; margin: 20px;" />
+                    </a>
+                </div>
+                <div class="navbar-center hidden lg:flex">
+                    <div class="dropdown">
+                        <div tabindex="0" role="button" class="btn btn-soft btn-primary">
+                            Eventos
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-base-100/80 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 backdrop-blur-xs outline outline-white">
+                            <li>
+                                <a href="{{ path('borae_eventos_lista') }}">
+                                    Lista de eventos
+                                </a>
+                            </li>
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPRESA') %}
+                                <li>
+                                    <a href="{{ path('borae_eventos_gerenciar') }}">
+                                        Gerenciar eventos
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="navbar-end space-x-2">
+                    {% if not app.user %}
+                        <a class="btn btn-dash" href="{{ path('borae_entrar') }}">
+                            Entrar
+                        </a>
+                        <a class="btn btn-success btn-dash" href="{{ path('borae_cadastro') }}">
+                            Registrar
+                        </a>
+                    {% else %}
+                        <div class="dropdown dropdown-end">
+                            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-primary/10 transition-colors duration-200">
+                                <div class="w-10 rounded-full outline-2 outline-primary outline-offset-2">
+                                    <img alt="Avatar de {{ app.user.nome }}" src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true" class="w-full h-full object-cover" />
+                                </div>
+                            </div>
+                            <ul tabindex="0" class="dropdown-content menu bg-base-100/80 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 backdrop-blur-xs outline outline-white">
+                                <li class="mb-2 pb-2 border-b border-base-300 flex items-center gap-2">
+                                    <div class="flex flex-col w-full -space-y-3">
+                                        <span class="block text-black/85">
+                                            Bem-vindo,
+                                        </span>
+                                        <span class="font-bold text-primary brightness-125">
+                                            {{ app.user.nome }}
+                                            !
+                                        </span>
+                                    </div>
+                                </li>
+                                <div class="divider -mt-4"></div>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li>
+                                        <a class="flex items-center gap-2 px-3 py-2 bg-black/10 border border-black/15 hover:bg-black/20 hover:text-black/80 text-black/70 rounded-md transition-colors duration-200" href="{{ path('borae_admin') }}">
+                                            <i class="ph ph-star-four text-xl"></i>
+                                            <span>
+                                                Administração
+                                            </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a class="flex items-center gap-2 px-3 py-2 bg-error/15 border border-error/40 hover:bg-error/80 hover:text-black text-error rounded-md transition-colors duration-200" href="{{ path('borae_sair') }}">
+                                        <i class="ph ph-sign-out text-xl"></i>
+                                        <span>
+                                            Sair
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+        <main class="flex flex-col grow justify-center items-center gap-2">
+            {% block body %}{% endblock %}
+        </main>
+        <section id="alertas" class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
+            {% for category, messages in app.flashes %}
+                {% for message in messages %}
+                    <twig:Alerta type="{{ category }}" message="{{ message }}" />
+                {% endfor %}
+            {% endfor %}
+        </section>
+        {% block javascripts %}
+            {{ vite_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
 </html>
