@@ -14,45 +14,82 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 final class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'borae_admin')]
-    public function index(): Response
+    public function index(\App\Repository\UsuarioRepository $usuarioRepository): Response
     {
-        return $this->render('admin/index.html.twig', []);
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $usuarios = $usuarioRepository->findAll();
+        return $this->render('admin/index.html.twig', [
+            'usuarios' => $usuarios,
+        ]);
     }
 
-    #[Route('/admin/toggle-admin', name: 'borae_tornar_admin', methods: ['POST'])]
-    public function toggleAdmin(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
+    #[Route('/admin/toggle-admin/{id}', name: 'borae_toggle_admin', methods: ['POST'])]
+    public function toggleAdmin(int $id, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
-        /** @var Usuario $user */
-        $user = $this->getUser();
-
-        $user->toggleAdmin();
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+        if (!$usuario) {
+            return $this->json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
+        }
+        $usuario->toggleAdmin();
         $entityManager->flush();
-
-        $this->atualizarSessaoUsuario($user, $tokenStorage);
-
-        $message = $user->isAdmin() ? 'Você agora é administrador!' : 'Privilégios de admin removidos!';
-        $category = $user->isAdmin() ? 'success' : 'error';
-        $this->addFlash($category, $message);
-
-        return $this->redirectToRoute('borae_inicio');
+        $reload = false;
+        $currentUser = $this->getUser();
+        $message = $usuario->isAdmin() ? 'Usuário agora é admin.' : 'Privilégios de admin removidos.';
+        $category = $usuario->isAdmin() ? 'success' : 'error';
+        if ($currentUser && $currentUser->getId() === $usuario->getId()) {
+            $this->atualizarSessaoUsuario($usuario, $tokenStorage);
+            $reload = false;
+        }
+        return $this->json([
+            'success' => true,
+            'admin' => $usuario->isAdmin(),
+            'message' => $message,
+            'category' => $category,
+            'reload' => $reload
+        ]);
     }
 
-    #[Route('/admin/toggle-empresa', name: 'borae_tornar_empresa', methods: ['POST'])]
-    public function toggleEmpresa(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
+    #[Route('/admin/toggle-empresa/{id}', name: 'borae_toggle_empresa', methods: ['POST'])]
+    public function toggleEmpresa(int $id, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
-        /** @var Usuario $user */
-        $user = $this->getUser();
-
-        $user->ToggleEmpresa();
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+        if (!$usuario) {
+            return $this->json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
+        }
+        $usuario->ToggleEmpresa();
         $entityManager->flush();
+        $reload = false;
+        $currentUser = $this->getUser();
+        $message = $usuario->isEmpresa() ? 'Usuário agora é empresa.' : 'Privilégios de empresa removidos.';
+        $category = $usuario->isEmpresa() ? 'success' : 'error';
+        if ($currentUser && $currentUser->getId() === $usuario->getId()) {
+            $this->atualizarSessaoUsuario($usuario, $tokenStorage);
+            $reload = false;
+        }
+        return $this->json([
+            'success' => true,
+            'empresa' => $usuario->isEmpresa(),
+            'message' => $message,
+            'category' => $category,
+            'reload' => $reload
+        ]);
+    }
 
-        $this->atualizarSessaoUsuario($user, $tokenStorage);
-
-        $message = $user->isEmpresa() ? 'Você agora é uma empresa!' : 'Privilégios de empresa removidos!';
-        $category = $user->isEmpresa() ? 'success' : 'error';
-        $this->addFlash($category, $message);
-
-        return $this->redirectToRoute('borae_inicio');
+    #[Route('/admin/deletar-usuario/{id}', name: 'admin_deletar_usuario', methods: ['POST'])]
+    public function deletarUsuario(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+        if (!$usuario) {
+            $this->addFlash('error', 'Usuário não encontrado.');
+        } else {
+            $entityManager->remove($usuario);
+            $entityManager->flush();
+            $this->addFlash('success', 'Usuário deletado com sucesso.');
+        }
+        return $this->redirectToRoute('borae_admin');
     }
 
     private function atualizarSessaoUsuario(Usuario $user, TokenStorageInterface $tokenStorage): void

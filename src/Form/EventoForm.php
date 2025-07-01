@@ -8,6 +8,7 @@ use App\Enums\CategoriaEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,10 +18,21 @@ class EventoForm extends AbstractType
     {
         $builder
             ->add('nome')
-            ->add('data_inicio')
-            ->add('hora_inicio')
+            ->add('data_inicio', \Symfony\Component\Form\Extension\Core\Type\DateType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'html5' => true,
+            ])
+            ->add('hora_inicio', TimeType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'with_seconds' => false,
+                'attr' => [
+                'step' => '300',
+    ],
+])
             ->add('endereco')
-            ->add('categoria', EnumType::class, [
+             ->add('categoria', EnumType::class, [
                 'class' => CategoriaEnum::class,
                 'choice_label' => function (CategoriaEnum $choice) {
                     return $choice->getCategoria();

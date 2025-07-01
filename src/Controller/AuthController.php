@@ -19,7 +19,7 @@ class AuthController extends AbstractController
         $ultimoUsuario = $authenticationUtils->getLastUsername();
 
         if ($erro) {
-            $this->addFlash('erro', 'Credenciais inválidas. Verifique seu email e senha.');
+            $this->addFlash('erro', 'Credenciais inválidas. Verifique seu usuário e senha.');
         }
 
         return $this->render('auth/entrar.html.twig', [

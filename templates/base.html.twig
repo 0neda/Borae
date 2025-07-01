@@ -16,9 +16,9 @@
     </head>
     <body class="flex flex-col min-h-screen">
         <!-- Esse é o fundo da página, degradê com animação e a imagem de fundo -->
-        <section id="background" aria-label="Animação de fundo">
-            <div class="absolute -z-1 inset-0 bg-gradient-to-br from-primary to-indigo-950 to-90% from-10%">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        <section id="background" aria-label="Animação de fundo" class="fixed inset-0 w-full h-full pointer-events-none select-none -z-10">
+            <div class="bg-cover absolute inset-0 w-full h-full bg-gradient-to-br from-primary to-indigo-950 to-90% from-10%">
+                <div class="absolute inset-0 w-full h-full bg-gradient-to-t from-black/50 to-transparent"></div>
             </div>
             <div class="absolute top-20 left-10 w-72 h-72 bg-violet-500/100 rounded-full blur-[256px] animate-[opacity-100_opacity-0_ease-in-out_2s_infinite] delay-750"></div>
             <div class="absolute bottom-20 right-10 w-96 h-96 bg-violet-400/100 rounded-full blur-[256px] animate-pulse delay-1000"></div>
@@ -30,7 +30,7 @@
                         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
                             <i class="ph ph-list text-xl"></i><!-- Icone do menu mobile --></div>
                         <!-- Menu dropdown (para mobile) -->
-                        <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100/50 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 backdrop-blur-xs outline-1 outline-white">
+                        <ul tabindex="0" class="menu menu-sm dropdown-content bg-white text-zinc-800 rounded-box z-1 mt-3 w-52 p-2 shadow-black/25 space-y-2 outline-1 outline-white">
                             <li>
                                 <a>
                                     Menu
@@ -53,6 +53,16 @@
                                             </a>
                                         </li>
                                     {% endif %}
+                                    <li class="block lg:hidden">
+                                        <a href="{{ path('borae_entrar') }}" class="btn btn-dash w-full my-1">
+                                            Entrar
+                                        </a>
+                                    </li>
+                                    <li class="block lg:hidden">
+                                        <a href="{{ path('borae_cadastro') }}" class="btn btn-success btn-dash w-full my-1">
+                                            Cadastrar
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -63,10 +73,10 @@
                 </div>
                 <div class="navbar-center hidden lg:flex">
                     <div class="dropdown">
-                        <div tabindex="0" role="button" class="btn btn-soft btn-primary">
+                        <div tabindex="0" role="button" class="btn btn-soft btn-xl btn-primary">
                             Eventos
                         </div>
-                        <ul tabindex="0" class="dropdown-content menu bg-base-100/80 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 backdrop-blur-xs outline outline-white">
+                        <ul tabindex="0" class="dropdown-content menu bg-white text-zinc-800 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 outline outline-white">
                             <li>
                                 <a href="{{ path('borae_eventos_lista') }}">
                                     Lista de eventos
@@ -84,12 +94,14 @@
                 </div>
                 <div class="navbar-end space-x-2">
                     {% if not app.user %}
-                        <a class="btn btn-dash" href="{{ path('borae_entrar') }}">
-                            Entrar
-                        </a>
-                        <a class="btn btn-success btn-dash" href="{{ path('borae_cadastro') }}">
-                            Registrar
-                        </a>
+                        <div class="hidden sm:flex gap-2 items-center">
+                            <a class="btn btn-dash" href="{{ path('borae_entrar') }}">
+                                Entrar
+                            </a>
+                            <a class="btn btn-success btn-dash" href="{{ path('borae_cadastro') }}">
+                                Cadastrar
+                            </a>
+                        </div>
                     {% else %}
                         <div class="dropdown dropdown-end">
                             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover:bg-primary/10 transition-colors duration-200">
@@ -97,7 +109,7 @@
                                     <img alt="Avatar de {{ app.user.nome }}" src="https://ui-avatars.com/api/?name={{ app.user.nome|url_encode }}&background=333333&color=fff&size=128&font-size=0.4&rounded=true&bold=true" class="w-full h-full object-cover" />
                                 </div>
                             </div>
-                            <ul tabindex="0" class="dropdown-content menu bg-base-100/80 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 backdrop-blur-xs outline outline-white">
+                            <ul tabindex="0" class="dropdown-content menu bg-white text-zinc-800 rounded-box z-10 w-56 p-4 shadow-lg shadow-black/25 space-y-2 outline outline-white">
                                 <li class="mb-2 pb-2 border-b border-base-300 flex items-center gap-2">
                                     <div class="flex flex-col w-full -space-y-3">
                                         <span class="block text-black/85">
@@ -134,10 +146,10 @@
                 </div>
             </div>
         </nav>
-        <main class="flex flex-col grow justify-center items-center gap-2">
+        <main class="flex flex-col grow gap-2">
             {% block body %}{% endblock %}
         </main>
-        <section id="alertas" class="flex fixed bottom-4 right-4 left-4 justify-center items-center z-50">
+        <section id="alertas" class="toast toast-start">
             {% for category, messages in app.flashes %}
                 {% for message in messages %}
                     <twig:Alerta type="{{ category }}" message="{{ message }}" />

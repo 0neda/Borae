@@ -1,22 +1,40 @@
+{# Bloco customizado para estilizar selects (choices) #}
+{# Sobrescreve apenas para adicionar classes customizadas ao <select> #}
+{% block choice_widget_collapsed %}
+    <div class="relative group">
+        <select class="flex items-center rounded-2xl w-full bg-white backdrop-blur-sm transition-all duration-300 outline-none text-black py-1 px-4 text-lg font-light cursor-pointer shadow-lg appearance-none" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if placeholder is not none %}
+                <option value=""{% if required and (value is empty or value is same as("") or value is same as(null)) %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+            {% endif %}
+            {% if preferred_choices|length > 0 %}
+                {% set options = preferred_choices %}
+                {% set render_preferred_choices = true %}
+                {{- block('choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none %}
+                    <option disabled="disabled">{{ separator }}</option>
+                {% endif %}
+            {% endif %}
+            {% set options = choices %}
+            {% set render_preferred_choices = false %}
+            {{- block('choice_widget_options') -}}
+        </select>
+        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">
+            <i class="ph ph-caret-down"></i>
+        </span>
+    </div>
+{% endblock %}
 {% block form_widget_simple %}
     {% set type = type|default(attr.type|default('text')) %}
     {% if type == 'hidden' %}
-        <input
-    type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
-        {% else %}
-        {% set icon = attr.icon ?? null %}
+        <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
+    {% else %}
+        {% set icon = attr.icon is defined ? attr.icon : null %}
         <div class="relative group">
-            <div class="flex items-center px-4 py-4 rounded-xl border-2 border-white/30 bg-white/20 backdrop-blur-sm
-                    focus-within:border-primary focus-within:bg-white/40 focus-within:shadow-xl
-                transition-all duration-300 hover:border-white/50 hover:bg-white/30">
+            <div class="flex items-center rounded-2xl w-full bg-white/90 backdrop-blur-xl border border-white/20 shadow-2xl px-5 py-3 transition-all duration-300">
                 {% if icon %}
-                    <div class="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mr-3
-                        group-focus-within:bg-primary/20 transition-colors duration-200">
-                        <i class="ph {{ icon }} text-primary"></i>
-                    </div>
+                    <i class="ph {{ icon }} text-primary text-xl mr-3"></i>
                 {% endif %}
-                <input class="flex-1 bg-transparent border-0 outline-0 text-base-content placeholder:text-base-content/50
-                text-lg font-medium" type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}" />
+                <input class="flex-1 bg-transparent border-0 outline-0 placeholder:text-black text-lg font-light text-black truncate min-w-0" type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}" />
             </div>
         </div>
     {% endif %}
@@ -43,22 +61,20 @@
     {% if help is not empty %}
         <div class="mt-2 text-sm text-base-content/60 flex items-center gap-2">
             <i class="ph ph-info text-primary"></i>
-            {{ help }}
+            {{ help|raw }}
         </div>
     {% endif %}
 {% endblock %}
 {% block form_label %}
     {% if label is not same as(false) %}
-        <label class="label mb-2" for="{{ id }}">
-            <span class="label-text font-semibold text-lg text-base-content flex items-center gap-2">
-                {% if attr.icon is defined %}
+        <label class="label mb-2 !text-black" for="{{ id }}">
+            <span class="label-text font-semibold text-lg text-black flex items-center gap-2">
+                {% if attr.icon is defined and attr.icon %}
                     <i class="ph {{ attr.icon }} text-primary text-xl"></i>
                 {% endif %}
                 {{ label|default(name|humanize) }}
                 {% if required %}
-                    <span class="text-error">
-                        *
-                    </span>
+                    <span class="text-error">*</span>
                 {% endif %}
             </span>
         </label>

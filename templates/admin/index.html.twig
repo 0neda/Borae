@@ -1,9 +1,94 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}
-  Hello AdminController!
+    Dashboard Admin
 {% endblock %}
-
 {% block body %}
-  <h1 class="text-3xl font-black">Painel de administração</h1>
-{% endblock %}
+    <section class="w-full py-12 flex flex-col items-center">
+        <div class="w-full max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl border border-white/20 rounded-2xl p-8">
+            <h1 class="text-3xl font-bold mb-6">
+                Usuários
+            </h1>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-left">
+                            ID
+                        </th>
+                        <th class="px-4 py-2 text-left">
+                            Nome
+                        </th>
+                        <th class="px-4 py-2 text-left">
+                            E-mail
+                        </th>
+                        <th class="px-4 py-2 text-left">
+                            Admin
+                        </th>
+                        <th class="px-4 py-2 text-left">
+                            Empresa
+                        </th>
+                        <th class="px-4 py-2 text-left">
+                            Ações
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr class="hover:bg-base-200/50 transition" x-data="{ admin: {{ usuario.admin ? 'true' : 'false' }}, empresa: {{ usuario.empresa ? 'true' : 'false' }} }">
+                            <td class="px-4 py-2">
+                                {{ usuario.id }}
+                            </td>
+                            <td class="px-4 py-2">
+                                {{ usuario.nome }}
+                            </td>
+                            <td class="px-4 py-2">
+                                {{ usuario.email }}
+                            </td>
+                            <td class="px-4 py-2">
+                                <button type="button" class="btn btn-xs" :class="admin ? 'btn-success' : 'btn-outline'" x-text="admin ? 'Sim' : 'Não'" @click="
+                                    fetch('{{ path('borae_toggle_admin', {'id': usuario.id}) }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/json' } })
+                                    .then(r => r.json())
+                                    .then(data => {
+                                    if(data.success) admin = data.admin;
+                                    if(data.reload) window.location.reload();
+                                    if(data.message && data.category) {
+                                    window.dispatchEvent(new CustomEvent('alerta', { detail: { type: data.category, message: data.message } }));
+                                    }
+                                    });
+                                "></button>
+                            </td>
+                            <td class="px-4 py-2">
+                                <button type="button" class="btn btn-xs" :class="empresa ? 'btn-success' : 'btn-outline'" x-text="empresa ? 'Sim' : 'Não'" @click="
+                                    fetch('{{ path('borae_toggle_empresa', {'id': usuario.id}) }}', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/json' } })
+                                    .then(r => r.json())
+                                    .then(data => {
+                                    if(data.success) empresa = data.empresa;
+                                    if(data.reload) window.location.reload();
+                                    if(data.message && data.category) {
+                                    window.dispatchEvent(new CustomEvent('alerta', { detail: { type: data.category, message: data.message } }));
+                                    }
+                                    });
+                                "></button>
+                            </td>
+                            <td class="px-4 py-2">
+                                <form method="post" action="{{ path('admin_deletar_usuario', {'id': usuario.id}) }}" onsubmit="return confirm('Tem certeza que deseja deletar este usuário?');" style="display:inline">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-xs btn-error">
+                                            <i class="ph ph-trash"></i>
+                                            Deletar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-base-content/60">
+                                    Nenhum usuário encontrado.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endblock %}
+    

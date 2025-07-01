@@ -19,11 +19,15 @@ final class EventosController extends AbstractController
     {
         $usuario = $this->getUser();
         $form = null;
+        $formEdicao = null;
 
         if ($usuario) {
             $evento = new Evento();
             $form = $this->createForm(EventoForm::class, $evento);
             $form->handleRequest($request);
+
+            $eventoEdicao = new Evento();
+            $formEdicao = $this->createForm(EventoForm::class, $eventoEdicao);
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $evento->setCriador($usuario);
@@ -35,9 +39,18 @@ final class EventosController extends AbstractController
             }
         }
 
+        // Monta um array de forms de edição para cada evento do usuário logado
+        $eventos = $eventoRepository->findAllOrderByDataInicio();
+        $formsEdicao = [];
+        foreach ($eventos as $ev) {
+            if ($usuario && $ev->getCriador() === $usuario) {
+                $formsEdicao[$ev->getId()] = $this->createForm(EventoForm::class, $ev)->createView();
+            }
+        }
         return $this->render('eventos/index.html.twig', [
-            'eventos' => $eventoRepository->findAll(),
+            'eventos' => $eventos,
             'form' => $form?->createView(),
+            'formsEdicao' => $formsEdicao,
         ]);
     }
 
@@ -46,22 +59,32 @@ final class EventosController extends AbstractController
     {
         $usuario = $this->getUser();
         $form = null;
+        $formsEdicao = [];
 
         if ($usuario) {
             $evento = new Evento();
             $form = $this->createForm(EventoForm::class, $evento);
             $form->handleRequest($request);
         }
-        if ($form->isSubmitted() && $form->isValid()) {
-            $evento->setCriador($usuario);
-            $entityManager->persist($evento);
-            $entityManager->flush();
+
+        if ($form && $form->isSubmitted() && $form->isValid()) {
+            if ($usuario) {
+                $evento->setCriador($usuario);
+                $entityManager->persist($evento);
+                $entityManager->flush();
+                $this->addFlash('success', 'Evento criado com sucesso!');
+                return $this->redirectToRoute('borae_eventos_gerenciar', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
-        $this->addFlash('success', 'Evento criado com sucesso!');
-        return $this->render('eventos/gerenciar.html.twig', [
-            'eventos' => $eventoRepository->findByCriador($this->getUser()),
+        $eventos = $usuario ? $eventoRepository->findByCriador($usuario) : [];
+        foreach ($eventos as $ev) {
+            $formsEdicao[$ev->getId()] = $this->createForm(EventoForm::class, $ev)->createView();
+        }
+        return $this->render('eventos/index.html.twig', [
+            'eventos' => $eventos,
             'form' => $form?->createView(),
+            'formsEdicao' => $formsEdicao,
         ]);
     }
 

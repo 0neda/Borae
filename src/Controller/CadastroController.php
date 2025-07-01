@@ -23,17 +23,11 @@
 			$form = $this->createForm(FormCadastro::class, $user);
 			$form->handleRequest($request);
 
-			if ($form->isSubmitted() && $form->isValid()) {
+			if ($form->isSubmitted()) {
 				$senha = $form->get('senhaCrua')->getData();
 				$senhaConf = $form->get('senhaConf')->getData();
 
-				if ($senha !== $senhaConf) {
-					$form->get('senhaConf')->addError(
-						new \Symfony\Component\Form\FormError(
-							'As senhas não coincidem.',
-						),
-					);
-				} else {
+				if ($form->isValid() && $senha === $senhaConf) {
 					/** @var string $senhaCrua */
 					$senhaCrua = $form->get('senhaCrua')->getData();
 
@@ -48,10 +42,17 @@
 					// do anything else you need here, like send an email
 
 					return $this->redirectToRoute('borae_entrar');
-				}
-			} else {
-				foreach ($form->getErrors(true) as $erro) {
-					$this->addFlash('erro', $erro->getMessage());
+				} else {
+					if ($senha !== $senhaConf) {
+						$form->get('senhaConf')->addError(
+							new \Symfony\Component\Form\FormError(
+								'As senhas não coincidem.',
+							),
+						);
+					}
+					foreach ($form->getErrors(true) as $erro) {
+						$this->addFlash('erro', $erro->getMessage());
+					}
 				}
 			}
 

@@ -1,225 +1,198 @@
 {% form_theme formCadastro 'form/layout_formularios.html.twig' %}
 {% extends 'base.html.twig' %}
-
 {% block title %}
-	Cadastre-se no Boraê
+    Cadastre-se no Boraê
 {% endblock %}
-
 {% block body %}
-	<div class="flex grow w-full items-center justify-center">
-		<div class="min-w-max max-w-2xl">
-
-			<div class="text-center mb-6">
-				<h1 class="text-7xl text-white font-black
-				mb-1">
-					Cadastre-se!
-				</h1>
-				<p class="text-white/70 text-lg">Crie sua conta e descubra eventos incríveis</p>
-			</div>
-
-			<div class="card bg-white/90 backdrop-blur-xl shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-300">
-				<div class="card-body p-8">
-					{{ form_start(formCadastro, {
-						attr: {
-							'x-data': '{
-								senha: "",
-								senhaConf: "",
-								email: "",
-								emailValido: true,
-								senhasCompatíveis: true,
-								mostrarSenha: false,
-								mostrarSenhaConf: false,
-								validarSenhas() {
-									this.senhasCompatíveis = this.senha === this.senhaConf && this.senha.length >= 6;
-								}
-							}',
-							'class': 'space-y-6'
-						}
-					}) }}
-
-					<div class="flex flex-row gap-4">
-						<!-- Campo Usuário -->
-						<div>
-							{{ form_label(formCadastro.usuario) }}
-							{{ form_errors(formCadastro.usuario) }}
-							{{ form_widget(formCadastro.usuario, {
-								attr: {
-									'placeholder': 'Escolha seu nome de usuário',
-									'icon': 'ph-user-circle',
-									'class': 'transition-all duration-200'
-								}
-							}) }}
-							{{ form_help(formCadastro.usuario) }}
-						</div>
-
-						<!-- Campo Nome -->
-						<div>
-							{{ form_label(formCadastro.nome) }}
-							{{ form_errors(formCadastro.nome) }}
-							{{ form_widget(formCadastro.nome, {
-								attr: {
-									'placeholder': 'Digite seu nome completo',
-									'pattern': '[A-Za-zÀ-ÖØ-öø-ÿ\\s]+',
-									'title': 'Digite um nome válido, apenas letras e espaços',
-									'icon': 'ph-user-rectangle',
-									'class': 'transition-all duration-200'
-								}
-							}) }}
-							{{ form_help(formCadastro.nome) }}
-						</div>
-					</div>
-
-					<div class="flex flex-row gap-4">
-						<!-- Campo Email -->
-						<div>
-							{{ form_label(formCadastro.email) }}
-							{{ form_errors(formCadastro.email) }}
-							<div x-data="{ emailValido: true }">
-								{{ form_widget(formCadastro.email, {
-									attr: {
-										'x-model': 'email',
-										'@input': 'emailValido = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)',
-										'placeholder': 'Digite seu melhor e-mail',
-										'type': 'email',
-										'icon': 'ph-envelope',
-										'class': 'transition-all duration-200'
-									}
-								}) }}
-								<div x-show="!emailValido && email.length > 0" x-transition class="mt-2 text-sm text-error flex items-center gap-2">
-									<i class="ph ph-warning-circle"></i>
-									Por favor, digite um e-mail válido
-								</div>
-							</div>
-							{{ form_help(formCadastro.email) }}
-						</div>
-
-						<!-- Campo Telefone -->
-						<div>
-							{{ form_label(formCadastro.telefone) }}
-							{{ form_errors(formCadastro.telefone) }}
-							{{ form_widget(formCadastro.telefone, {
-								attr: {
-									'x-mask': '(99) 99999-9999',
-									'placeholder': '(XX) XXXXX-XXXX',
-									'pattern': '\\(\\d{2}\\) \\d{5}-\\d{4}',
-									'title': 'Digite um telefone válido, ex: (99) 99999-9999',
-									'icon': 'ph-phone',
-									'class': 'transition-all duration-200'
-								}
-							}) }}
-							{{ form_help(formCadastro.telefone) }}
-						</div>
-					</div>
-
-					<div class="flex flex-row gap-4">
-						<!-- Campo Senha -->
-						<div>
-							{{ form_label(formCadastro.senhaCrua) }}
-							{{ form_errors(formCadastro.senhaCrua) }}
-							<div class="relative">
-								{{ form_widget(formCadastro.senhaCrua, {
-									attr: {
-										'x-model': 'senha',
-										'@input': 'validarSenhas()',
-										'placeholder': 'Crie uma senha segura',
-										':type': 'mostrarSenha ? "text" : "password"',
-										'pattern': '.{6,}',
-										'title': 'A senha deve ter pelo menos 6 caracteres',
-										'icon': 'ph-lock',
-										'class': 'pr-12 transition-all duration-200'
-									}
-								}) }}
-								<button type="button"
-									@click="mostrarSenha = !mostrarSenha"
-									class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-primary transition-colors">
-									<i class="ph" :class="mostrarSenha ? 'ph-eye-slash' : 'ph-eye'"></i>
-								</button>
-							</div>
-							<div x-show="senha.length > 0" x-transition class="mt-2">
-								<div class="flex items-center gap-2 text-sm">
-									<div class="flex-1 bg-base-200 rounded-full h-2">
-										<div class="h-2 rounded-full transition-all duration-300"
-											:class="{
-											'w-1/3 bg-error': senha.length < 6,
-											'w-2/3 bg-warning': senha.length >= 6 && senha.length < 8,
-											'w-full bg-success': senha.length >= 8
-										}"></div>
-									</div>
-									<span :class="{
-									'text-error': senha.length < 6,
-									'text-warning': senha.length >= 6 && senha.length < 8,
-									'text-success': senha.length >= 8
-								}">
-									<span x-text="senha.length < 6 ? 'Fraca' : (senha.length < 8 ? 'Média' : 'Forte')"></span>
-								</span>
-								</div>
-							</div>
-							{{ form_help(formCadastro.senhaCrua) }}
-						</div>
-
-						<!-- Confirmação de senha -->
-						<div>
-							{{ form_label(formCadastro.senhaConf) }}
-							{{ form_errors(formCadastro.senhaConf) }}
-							<div class="relative">
-								{{ form_widget(formCadastro.senhaConf, {
-									attr: {
-										'x-model': 'senhaConf',
-										'@input': 'validarSenhas()',
-										'placeholder': 'Confirme sua senha',
-										':type': 'mostrarSenhaConf ? "text" : "password"',
-										'pattern': '.{6,}',
-										'title': 'Repita a senha',
-										'icon': 'ph-lock',
-										'class': 'pr-12 transition-all duration-200'
-									}
-								}) }}
-								<button type="button"
-									@click="mostrarSenhaConf = !mostrarSenhaConf"
-									class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-primary transition-colors">
-									<i class="ph" :class="mostrarSenhaConf ? 'ph-eye-slash' : 'ph-eye'"></i>
-								</button>
-							</div>
-							<div x-show="senhaConf.length > 0" x-transition class="mt-2 text-sm flex items-center gap-2">
-								<i class="ph" :class="senhasCompatíveis ? 'ph-check-circle text-success' : 'ph-x-circle text-error'"></i>
-								<span :class="senhasCompatíveis ? 'text-success' : 'text-error'">
-								<span x-text="senhasCompatíveis ? 'Senhas coincidem' : 'Senhas não coincidem'"></span>
-							</span>
-							</div>
-						</div>
-					</div>
-
-					<!-- Botão de cadastro premium -->
-					<button type="submit"
-						:disabled="!senhasCompatíveis || senha.length < 6 || !emailValido"
-						:class="senhasCompatíveis && senha.length >= 6 && emailValido ?
-							'btn-success hover:btn-success' : 'btn-error hover:btn-error'"
-						class="btn w-full btn-lg text-lg font-semibold group relative overflow-hidden shadow-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50">
-						<span class="relative z-10 flex items-center gap-3">
-							<i class="ph ph-user-plus text-2xl group-hover:scale-110 transition-transform duration-300"></i>
-							<span x-text="senhasCompatíveis && senha.length >= 6 && emailValido ? 'Criar Conta' : 'Verifique os dados'"></span>
-						</span>
-						<div class="absolute inset-0 bg-gradient-to-r from-success via-white/50 to-success opacity-0 group-hover:opacity-100
-						transition-all duration-300"></div>
-						<div class="absolute inset-0 bg-gradient-to-r from-black/10 via-white/30 to-black/10
-						group-hover:translate-y-full trans ease-out transition-all duration-500"></div>
-					</button>
-
-					{{ form_end(formCadastro) }}
-
-										<!-- Link para login -->
-					<div class="text-center pt-6 border-t border-gradient-to-r from-transparent via-base-300 to-transparent">
-						<p class="text-base-content/60 mb-4 font-medium">Já tem uma conta?</p>
-						<a href="{{ path('borae_entrar') }}"
-							class="btn btn-outline btn-accent btn-wide hover:scale-105 transition-all duration-300 shadow-lg">
-							<i class="ph ph-sign-in text-xl"></i>
-							Fazer login
-						</a>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-
-{% endblock %}
+    <section class="relative w-full py-20 flex grow items-center justify-center overflow-hidden">
+        <div class="relative z-10 text-center px-6 max-w-2xl mx-auto w-full">
+            <div class="mb-8 transform hover:scale-105 transition-transform duration-500">
+                <h1 class="text-5xl md:text-6xl text-white mb-4 tracking-tight font-black">
+                    <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-violet-400 bg-clip-text text-transparent">
+                        Cadastre-se!
+                    </span>
+                </h1>
+                <p class="text-lg md:text-xl text-purple-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Crie sua conta e descubra eventos incríveis.
+                </p>
+                <div class="flex justify-center">
+                    {{ form_start(formCadastro, {
+                        attr: {
+                            'x-data': '{
+                                senha: "",
+                                senhaConf: "",
+                                email: "",
+                                emailValido: true,
+                                senhasCompativeis: true,
+                                mostrarSenha: false,
+                                mostrarSenhaConf: false,
+                                validarSenhas() {
+                                    this.senhasCompativeis = this.senha === this.senhaConf && this.senha.length >= 6;
+                                }
+                            }',
+                            'class': 'w-full max-w-2xl space-y-6 bg-white/90 backdrop-blur-xl shadow-2xl border border-white/20 rounded-2xl p-10'
+                        }
+                    }) }}
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.usuario) }}
+                            {{ form_errors(formCadastro.usuario) }}
+                            {{ form_widget(formCadastro.usuario, {
+                                        attr: {
+                                            'placeholder': 'Escolha seu nome de usuário',
+                                            'icon': 'ph-user-circle',
+                                            'class': 'transition-all duration-200 text-truncate',
+                                            'maxlength': '50'
+                                        }
+                                    }) }}
+                            {{ form_help(formCadastro.usuario) }}
+                        </div>
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.nome) }}
+                            {{ form_errors(formCadastro.nome) }}
+                            {{ form_widget(formCadastro.nome, {
+                                        attr: {
+                                            'placeholder': 'Digite seu nome completo',
+                                            'pattern': '[A-Za-zÀ-ÖØ-öø-ÿ\\s]+',
+                                            'title': 'Digite um nome válido, apenas letras e espaços',
+                                            'icon': 'ph-user-rectangle',
+                                            'class': 'transition-all duration-200 truncate',
+                                            'maxlength': '100'
+                                        }
+                                    }) }}
+                            {{ form_help(formCadastro.nome) }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.email) }}
+                            {{ form_errors(formCadastro.email) }}
+                            <div x-data="{ emailValido: true, email: '' }" x-init="email = $el.querySelector('input').value">
+                                {{ form_widget(formCadastro.email, {
+                                        attr: {
+                                            'x-model': 'email',
+                                            '@input': 'emailValido = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)',
+                                            'placeholder': 'Digite seu melhor e-mail',
+                                            'type': 'email',
+                                            'icon': 'ph-envelope',
+                                            'class': 'transition-all duration-200 truncate',
+                                            'maxlength': '100'
+                                        }
+                                    }) }}
+                                <div x-show="!emailValido && email.length > 0" x-transition class="mt-2 text-sm text-error flex items-center gap-2">
+                                    <i class="ph ph-warning-circle"></i>
+                                    Por favor, digite um e-mail válido
+                                </div>
+                            </div>
+                            {{ form_help(formCadastro.email) }}
+                        </div>
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.telefone) }}
+                            {{ form_errors(formCadastro.telefone) }}
+                            {{ form_widget(formCadastro.telefone, {
+                                        attr: {
+                                            'x-mask': '(99) 99999-9999',
+                                            'placeholder': '(XX) XXXXX-XXXX',
+                                            'pattern': '\\(\\d{2}\\) \\d{5}-\\d{4}',
+                                            'title': 'Digite um telefone válido, ex: (99) 99999-9999',
+                                            'icon': 'ph-phone',
+                                            'class': 'transition-all duration-200 truncate',
+                                            'maxlength': '20'
+                                        }
+                                    }) }}
+                            {{ form_help(formCadastro.telefone) }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.senhaCrua, 'Senha') }}
+                            {{ form_errors(formCadastro.senhaCrua) }}
+                            <div class="relative">
+                                {{ form_widget(formCadastro.senhaCrua, {
+                                        attr: {
+                                            'x-model': 'senha',
+                                            '@input': 'validarSenhas()',
+                                            'placeholder': 'Crie uma senha segura',
+                                            ':type': 'mostrarSenha ? "text" : "password"',
+                                            'pattern': '.{6,}',
+                                            'title': 'A senha deve ter pelo menos 6 caracteres',
+                                            'icon': 'ph-lock',
+                                            'class': 'pr-12 transition-all duration-200 truncate',
+                                            'maxlength': '50'
+                                        }
+                                    }) }}
+                                <button type="button" @click="mostrarSenha = !mostrarSenha" class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-primary transition-colors">
+                                    <i class="ph" :class="mostrarSenha ? 'ph-eye-slash' : 'ph-eye'"></i>
+                                </button>
+                            </div>
+                            <div x-show="senha.length > 0" x-transition class="mt-2">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <div class="flex-1 bg-base-200 rounded-full h-2">
+                                        <div class="h-2 rounded-full transition-all duration-300" :class="{
+                                            'w-1/3 bg-error': senha.length < 6,
+                                            'w-2/3 bg-warning': senha.length >= 6 && senha.length < 8,
+                                            'w-full bg-success': senha.length >= 8
+                                        }"></div>
+                                    </div>
+                                    <span :class="{
+                                            'text-error': senha.length < 6,
+                                            'text-warning': senha.length >= 6 && senha.length < 8,
+                                            'text-success': senha.length >= 8
+                                        }">
+                                        <span x-text="senha.length < 6 ? 'Fraca' : (senha.length < 8 ? 'Média' : 'Forte')"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            {{ form_help(formCadastro.senhaCrua) }}
+                        </div>
+                        <div class="w-full sm:w-1/2">
+                            {{ form_label(formCadastro.senhaConf) }}
+                            {{ form_errors(formCadastro.senhaConf) }}
+                            <div class="relative">
+                                {{ form_widget(formCadastro.senhaConf, {
+                                        attr: {
+                                            'x-model': 'senhaConf',
+                                            '@input': 'validarSenhas()',
+                                            'placeholder': 'Confirme sua senha',
+                                            ':type': 'mostrarSenhaConf ? "text" : "password"',
+                                            'pattern': '.{6,}',
+                                            'title': 'Repita a senha',
+                                            'icon': 'ph-lock',
+                                            'class': 'pr-12 transition-all duration-200 truncate',
+                                            'maxlength': '50'
+                                        }
+                                    }) }}
+                                <button type="button" @click="mostrarSenhaConf = !mostrarSenhaConf" class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-primary transition-colors">
+                                    <i class="ph" :class="mostrarSenhaConf ? 'ph-eye-slash' : 'ph-eye'"></i>
+                                </button>
+                            </div>
+                            <div x-show="senhaConf.length > 0" x-transition class="mt-2 text-sm flex items-center gap-2">
+                                <i class="ph" :class="senhasCompativeis ? 'ph-check-circle text-success' : 'ph-x-circle text-error'"></i>
+                                <span :class="senhasCompativeis ? 'text-success' : 'text-error'">
+                                    <span x-text="senhasCompativeis ? 'Senhas coincidem' : 'Senhas não coincidem'"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" :disabled="!senhasCompativeis || senha.length < 6 || !emailValido" :class="senhasCompativeis && senha.length >= 6 && emailValido ?
+                    'btn-primary hover:btn-primary' : 'btn-error hover:btn-error'" class="btn w-full btn-lg font-semibold flex items-center gap-2">
+                        <i class="ph ph-user-plus text-2xl"></i>
+                        <span x-text="senhasCompativeis && senha.length >= 6 && emailValido ? 'Criar Conta' : 'Verifique os dados'"></span>
+                    </button>
+                    <div class="text-center pt-4 border-t border-base-300">
+                        <span class="text-base-content/60">
+                            Já tem uma conta?
+                        </span>
+                        <br>
+                            <a href="{{ path('borae_entrar') }}" class="btn btn-outline btn-accent btn-wide mt-2 max-w-lg w-full">
+                                <i class="ph ph-sign-in text-xl"></i>
+                                Fazer login
+                            </a>
+                        </div>
+                        {{ form_end(formCadastro) }}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endblock %}
+    

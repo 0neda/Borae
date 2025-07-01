@@ -1,0 +1,96 @@
+{# Componente de formulário de evento reutilizável #}
+<div class="px-8 py-6">
+    {% if form is defined and form is not null %}
+        {% set action_override = action|default(null) %}
+        {{ form_start(form, {
+            action: action_override,
+            attr: {
+                class: 'space-y-5',
+                'x-on:submit': x_submit|default('')
+            }
+        }) }}
+        <div class="grid grid-cols-1 gap-4">
+            <div>
+                <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-1">
+                    Nome do Evento
+                    <span class="text-error">
+                        *
+                    </span>
+                </label>
+                {{ form_widget(form.nome, {attr: {placeholder: 'Ex: Show de Rock, Torneio...'} }) }}
+                {{ form_errors(form.nome) }}
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-2">
+                        Data
+                    </label>
+                    <div class="relative">
+                        {{ form_widget(form.data_inicio, {attr: {placeholder: 'Data do evento'} }) }}
+                    </div>
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-2">
+                        Hora
+                    </label>
+                    <div class="relative">
+                        {{ form_widget(form.hora_inicio, {attr: {placeholder: 'Horário do evento'} }) }}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-1">
+                    Endereço
+                    <span class="text-error">
+                        *
+                    </span>
+                </label>
+                {{ form_widget(form.endereco, {attr: {placeholder: 'Local do evento...'} }) }}
+            </div>
+            <div>
+                <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-1">
+                    Categoria
+                    <span class="text-error">
+                        *
+                    </span>
+                </label>
+                {{ form_widget(form.categoria, {attr: {placeholder: 'Categoria do evento'} }) }}
+            </div>
+            {% if form.descricao is defined %}
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-semibold text-indigo-950 mb-1">
+                        Descrição
+                    </label>
+                    {{ form_widget(form.descricao, {attr: {placeholder: 'Descreva brevemente...'} }) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form._token) }}
+        </div>
+        <div class="flex gap-3 pt-6">
+            <button type="button" x-on:click="{{ x_cancel|default('') }}" class="btn btn-soft text-black flex-1">
+                Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary flex-1">
+                <i class="ph ph-calendar-plus mr-2"></i>
+                {{ x_submit_label|default('Criar Evento') }}
+            </button>
+        </div>
+        {{ form_end(form, { render_rest: false }) }}
+    {% else %}
+        <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-warning/20 to-warning/10 rounded-full flex items-center justify-center">
+                <i class="ph ph-sign-in text-2xl text-warning"></i>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-indigo-950">
+                Login Necessário
+            </h4>
+            <p class="text-zinc-400 mb-4">
+                Você precisa estar logado para criar eventos
+            </p>
+            <a href="{{ path('borae_entrar') }}" class="btn btn-primary w-full flex items-center justify-center gap-2">
+                <i class="ph ph-sign-in mr-2"></i>
+                Fazer Login
+            </a>
+        </div>
+    {% endif %}
+</div>

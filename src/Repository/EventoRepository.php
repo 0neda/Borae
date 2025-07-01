@@ -26,6 +26,21 @@ class EventoRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * Retorna todos os eventos ordenados por data de início (ascendente)
+     *
+     * @return Evento[]
+     */
+    public function findAllOrderByDataInicio(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.data_inicio', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    
     //    /**
     //     * @return Evento[] Returns an array of Evento objects
     //     */

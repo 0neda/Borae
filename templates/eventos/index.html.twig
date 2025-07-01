@@ -3,9 +3,39 @@
     Lista de Eventos
 {% endblock %}
 {% block body %}
-    <div x-data="{modalCriarEventoVisivel: false, modalEditarEventoVisivel: false, eventoEdicao: { }}">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    {#
+        Filtragem de eventos por categoria usando AlpineJS
+        - Extrai as categorias dos eventos no backend (Twig)
+        - Renderiza botões para cada categoria
+        - Estado AlpineJS: categoriasAtivas (array)
+        - Filtra eventos exibidos conforme categoriasAtivas
+    #}
+    {# Twig não tem filtro nativo "unique". Vamos extrair categorias únicas manualmente #}
+    {% set categorias = [] %}
+        {% for evento in eventos %}
+        {% set cat = evento.categoria.getCategoria() %}
+            {% if cat not in categorias %}
+        {% set categorias = categorias|merge([cat]) %}
+    {% endif %}
+    {% endfor %}
+    {% set categorias = categorias|sort %}
+        <div x-data="{
+            modalCriarEventoVisivel: false,
+            modalEditarEventoVisivel: false,
+            eventoEdicaoId: null,
+            categoriasAtivas: [],
+            toggleCategoria(cat) {
+            if (this.categoriasAtivas.includes(cat)) {
+            this.categoriasAtivas = this.categoriasAtivas.filter(c => c !== cat)
+            } else {
+            this.categoriasAtivas.push(cat)
+            }
+            },
+            eventoVisivel(cat) {
+            return this.categoriasAtivas.length === 0 || this.categoriasAtivas.includes(cat)
+            }
+        }"> <div class="container mx-auto my-12 px-4 flex flex-col">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 w-full">
                 <div>
                     <h1 class="text-3xl md:text-4xl font-bold text-zinc-100">
                         Eventos Disponíveis
@@ -13,8 +43,14 @@
                     <p class="text-zinc-300 mt-1">
                         Descubra eventos incríveis ao seu redor
                     </p>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        {% for cat in categorias %}
+                            <button type="button" class="btn btn-xs btn-outline bg-warning/5 border-warning/25 text-warning hover:brightness-125 hover:bg-warning/10 hover:text-warning rounded-full px-3 py-1 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-warning shadow-none transition-all duration-400 ease-in" :class="categoriasAtivas.includes('{{ cat|e('js') }}') ? 'bg-warning text-white border-warning drop-shadow-warning' : ''" x-on:click="toggleCategoria('{{ cat|e('js') }}')" x-text="'{{ cat|e('js') }}'" aria-pressed="categoriasAtivas.includes('{{ cat|e('js') }}') ? 'true' : 'false'"></button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-xs btn-outline bg-warning/5 border-warning/25 text-warning hover:brightness-125 hover:bg-warning/10 hover:text-warning rounded-full px-3 py-1 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-warning shadow-none transition-all duration-400 ease-in" :class="categoriasAtivas.length === 0 ? 'bg-warning text-white border-warning drop-shadow-warning' : ''" x-on:click="categoriasAtivas = []" x-text="'Todas'" aria-pressed="categoriasAtivas.length === 0 ? 'true' : 'false'"></button>
+                    </div>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto min-w-0">
                     <div class="flex items-center gap-2 bg-black/50 border-primary hover:cursor-default  rounded-xl px-4 py-2 shadow border transition-all duration-400 ease-in-out">
                         <span class="text-lg font-semibold text-primary">
                             {{ eventos|length }}
@@ -47,97 +83,95 @@
                     </button>
                 </div>
             {% else %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-data="{ eventoDetalhe: null }">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 flex-1 self-stretch" style="min-width:0;" x-data="{ eventoDetalhe: null }">
                     {% for evento in eventos %}
-                        <div class="group relative rounded-2xl bg-black/25 bg-gradient-to-br from-20% to-40% from-white/10 to-black/10 border border-white/35 shadow-xl shadow-black/20 transition-all duration-300 overflow-hidden hover:cursor-default">
-                            <div class="h-40 flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                                <i class="ph ph-calendar-check text-8xl text-black/50"></i>
-                                <span class="absolute top-3 right-3 px-3 py-1 rounded-md text-xs font-bold bg-gradient-to-br saturate-50 text-black from-red-900 via-amber-300 to-red-900 border border-amber-300/50">
-                                    {{ evento.categoria.getCategoria() }}
-                                </span>
-                                <span class="absolute top-3 left-3 bg-black/60 text-white text-xs rounded px-2 py-1">
-                                    {{ evento.dataInicio|date('d M') }}
-                                </span>
-                            </div>
-                            <div class="p-5 flex flex-col gap-2">
-                                <h3 class="font-semibold text-lg text-zinc-100 group-hover:text-primary transition-colors line-clamp-2">
-                                    {{ evento.nome }}
-                                </h3>
-                                <div class="flex items-center gap-2 text-zinc-300 text-sm">
-                                    <i class="ph ph-clock text-primary"></i>
-                                    <span>
-                                        {{ evento.horaInicio|date('H:i') }}
+                        <template x-if="eventoVisivel('{{ evento.categoria.getCategoria()|e('js') }}')">
+                            <div class="group relative rounded-2xl bg-black/25 bg-gradient-to-br from-20% to-40% from-white/10 to-black/10 border border-white/35 shadow-xl shadow-black/20 transition-all duration-300 overflow-hidden hover:cursor-default">
+                                <div class="h-40 flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
+                                    <i class="ph ph-calendar-check text-8xl text-black/50"></i>
+                                    <span class="absolute top-3 right-3 px-3 py-1 rounded-md text-xs font-bold bg-gradient-to-br saturate-50 text-black from-red-900 via-amber-300 to-red-900 border border-amber-300/50">
+                                        {{ evento.categoria.getCategoria() }}
                                     </span>
-                                    <i class="ph ph-map-pin text-primary ml-3"></i>
-                                    <span class="truncate">
-                                        {{ evento.endereco }}
+                                    <span class="absolute top-3 left-3 bg-black/60 text-white text-xs rounded px-2 py-1">
+                                        {{ evento.dataInicio|date('d M') }}
                                     </span>
                                 </div>
-                                <div class="flex items-center gap-2 text-zinc-300 text-sm">
-                                    <i class="ph ph-user text-primary"></i>
-                                    <span>
-                                        {{ evento.criador.nome }}
-                                    </span>
-                                </div>
-                                {% if evento.descricao %}
-                                    <p class="text-sm text-zinc-300 line-clamp-2">
-                                        {{ evento.descricao }}
-                                    </p>
-                                {% endif %}
-                                <div class="flex gap-2 mt-2">
-                                    <button type="button" class="btn btn-outline hover:brightness-125 bg-white/5 btn-sm border-white/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-white shadow-none text-white flex-1 transition-all duration-400 ease-in" x-on:click="eventoDetalhe = {
-                                        nome: '{{ evento.nome|e('js') }}',
-                                        categoria: '{{ evento.categoria.getCategoria()|e('js') }}',
-                                        data: '{{ evento.dataInicio|date('d/m/Y') }}',
-                                        hora: '{{ evento.horaInicio|date('H:i') }}',
-                                        endereco: '{{ evento.endereco|e('js') }}',
-                                        criador: '{{ evento.criador.nome|e('js') }}',
-                                    descricao: {{ evento.descricao is not empty ? '" ' ~ evento.descricao|e(' js') ~ ' "' : 'null' }}
-                                        }">
-                                        <i class="ph ph-eye mr-1"></i>
-                                        Ver
-                                    </button>
-                                    {% if app.user and evento.criador == app.user %}
-                                        <button type="button" class="btn btn-outline hover:brightness-125 bg-warning/5 btn-sm border-warning/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-warning shadow-none text-warning flex-1 transition-all duration-400 ease-in" x-on:click="modalEditarEventoVisivel = true; eventoEdicao = {
-                                            id: {{ evento.id }},
+                                <div class="p-5 flex flex-col gap-2">
+                                    <h3 class="font-semibold text-lg text-zinc-100 group-hover:text-primary transition-colors line-clamp-2">
+                                        {{ evento.nome }}
+                                    </h3>
+                                    <div class="flex items-center gap-2 text-zinc-300 text-sm">
+                                        <i class="ph ph-clock text-primary"></i>
+                                        <span>
+                                            {{ evento.horaInicio|date('H:i') }}
+                                        </span>
+                                        <i class="ph ph-map-pin text-primary ml-3"></i>
+                                        <span class="truncate">
+                                            {{ evento.endereco }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-zinc-300 text-sm">
+                                        <i class="ph ph-user text-primary"></i>
+                                        <span>
+                                            {{ evento.criador.nome }}
+                                        </span>
+                                    </div>
+                                    {% if evento.descricao %}
+                                        <p class="text-sm text-zinc-300 line-clamp-2">
+                                            {{ evento.descricao }}
+                                        </p>
+                                    {% endif %}
+                                    <div class="flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-outline hover:brightness-125 bg-white/5 btn-sm border-white/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-white shadow-none text-white flex-1 transition-all duration-400 ease-in" x-on:click="eventoDetalhe = {
                                             nome: '{{ evento.nome|e('js') }}',
-                                            data_inicio: '{{ evento.dataInicio|date('Y-m-d') }}',
-                                            hora_inicio: '{{ evento.horaInicio|date('H:i') }}',
+                                            categoria: '{{ evento.categoria.getCategoria()|e('js') }}',
+                                            data: '{{ evento.dataInicio|date('d/m/Y') }}',
+                                            hora: '{{ evento.horaInicio|date('H:i') }}',
                                             endereco: '{{ evento.endereco|e('js') }}',
-                                            categoria: '{{ evento.categoria.value|e('js') }}',
-                                        descricao: {{ evento.descricao is not empty ? '\" ' ~ evento.descricao|e(' js') ~ ' \"' : 'null' }}
+                                            criador: '{{ evento.criador.nome|e('js') }}',
+                                        descricao: {{ evento.descricao is not empty ? '" ' ~ evento.descricao|e(' js') ~ ' "' : 'null' }}
                                             }">
-                                            <i class="ph ph-pencil mr-1"></i>
-                                            Editar
+                                            <i class="ph ph-eye mr-1"></i>
+                                            Ver
                                         </button>
-                                        <form method="post" action="{{ path('borae_eventos_deletar', {'id': evento.id}) }}" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este evento?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
-                                                <button type="submit" class="btn btn-outline hover:brightness-125 bg-error/5 btn-sm border-error/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-error shadow-none text-error flex-1 transition-all duration-400 ease-in" title="Excluir">
-                                                    <i class="ph ph-trash"></i>
-                                                </button>
-                                            </form>
-                                        {% endif %}
+                                        {% if app.user and evento.criador == app.user %}
+                                            <button type="button" class="btn btn-outline hover:brightness-125 bg-warning/5 btn-sm border-warning/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-warning shadow-none text-warning flex-1 transition-all duration-400 ease-in" x-on:click="modalEditarEventoVisivel = true; eventoEdicaoId = {{ evento.id }}">
+                                                <i class="ph ph-pencil mr-1"></i>
+                                                Editar
+                                            </button>
+                                            <form method="post" action="{{ path('borae_eventos_deletar', {'id': evento.id}) }}" class="inline" x-data x-on:submit.prevent="$dispatch('open-modal', { name: 'confirm-delete', id: {{ evento.id }} })">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
+                                                    <button type="submit" class="btn btn-outline hover:brightness-125 bg-error/5 btn-sm border-error/25 drop-shadow-lg drop-shadow-transparent hover:drop-shadow-error shadow-none text-error flex-1 transition-all duration-400 ease-in" title="Excluir">
+                                                        <i class="ph ph-trash"></i>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                        <!-- Modal Detalhes Evento -->
-                        <div x-cloak x-show="eventoDetalhe" x-transition.opacity.duration.200ms class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                            <div x-show="eventoDetalhe" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-md bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 p-8 relative">
-                                <button x-on:click="eventoDetalhe = null" aria-label="Fechar" class="absolute top-4 right-4 text-zinc-400 hover:text-error transition-colors">
-                                    <i class="ph ph-x text-xl"></i>
-                                </button>
-                                <h3 class="text-2xl font-bold text-zinc-100 mb-2" x-text="eventoDetalhe?.nome"></h3>
+                        </template>
+                    {% endfor %}
+                    {# Modal Detalhes Evento #}
+                    <div x-cloak x-show="eventoDetalhe" x-transition.opacity.duration.200ms class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                        <div x-show="eventoDetalhe" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-indigo-700 p-0 relative overflow-hidden">
+                            <button x-on:click="eventoDetalhe = null" aria-label="Fechar" class="absolute top-4 right-4 text-zinc-400 hover:text-error transition-colors z-10">
+                                <i class="ph ph-x text-xl"></i>
+                            </button>
+                            <div class="bg-gradient-to-br from-primary to-indigo-950 px-8 py-6 border-b">
+                                <h3 class="text-2xl font-bold text-zinc-100 flex items-center gap-2" x-text="eventoDetalhe?.nome"></h3>
+                            </div>
+                            <div class="px-8 py-6">
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20" x-text="eventoDetalhe?.categoria"></span>
-                                    <span class="text-zinc-300" x-text="eventoDetalhe?.data"></span>
-                                    <span class="text-zinc-300" x-text="eventoDetalhe?.hora"></span>
+                                    <span class="text-indigo-950" x-text="eventoDetalhe?.data"></span>
+                                    <span class="text-indigo-950" x-text="eventoDetalhe?.hora"></span>
                                 </div>
-                                <div class="flex items-center gap-2 text-zinc-300 mb-2">
+                                <div class="flex items-center gap-2 text-indigo-950 mb-2">
                                     <i class="ph ph-map-pin text-primary"></i>
                                     <span x-text="eventoDetalhe?.endereco"></span>
                                 </div>
-                                <div class="flex items-center gap-2 text-zinc-300 mb-2">
+                                <div class="flex items-center gap-2 text-indigo-950 mb-2">
                                     <i class="ph ph-user text-primary"></i>
                                     <span x-text="eventoDetalhe?.criador"></span>
                                 </div>
@@ -147,165 +181,82 @@
                             </div>
                         </div>
                     </div>
-                {% endif %}
-            </div>
-            <div x-cloak x-show="modalCriarEventoVisivel" x-transition.opacity.duration.200ms x-trap.inert.noscroll="modalCriarEventoVisivel" x-on:keydown.esc.window="modalCriarEventoVisivel = false" x-on:click.self="modalCriarEventoVisivel = false" class="fixed inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div x-show="modalCriarEventoVisivel" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 p-0 relative overflow-hidden">
+                </div>
+            {% endif %}
+        </div>
+        <template x-if="modalCriarEventoVisivel">
+            <div x-cloak x-show="modalCriarEventoVisivel" x-transition.opacity.duration.200ms x-trap.inert.noscroll="modalCriarEventoVisivel" x-on:keydown.esc.window="modalCriarEventoVisivel = false" x-on:click.self="modalCriarEventoVisivel = false" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div x-show="modalCriarEventoVisivel" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-indigo-700 p-0 relative overflow-hidden">
                     <button x-on:click="modalCriarEventoVisivel = false" aria-label="Fechar" class="absolute top-4 right-4 text-zinc-400 hover:text-error transition-colors z-10">
                         <i class="ph ph-x text-xl"></i>
                     </button>
-                    <div class="bg-gradient-to-r from-primary/10 to-secondary/10 px-8 py-6 border-b border-zinc-800">
-                        <h3 class="text-2xl font-bold text-zinc-100">
+                    <div class="bg-gradient-to-br from-primary to-indigo-950  px-8 py-6 border-b">
+                        <h3 class="text-2xl font-bold text-zinc-100 flex items-center gap-2">
                             Criar Evento
                         </h3>
                     </div>
-                    <div class="px-8 py-6">
-                        {% if form %}
-                            {{ form_start(form, {
-                                    attr: {
-                                    class: 'space-y-5',
-                                    'x-on:submit': 'setTimeout(() => modalCriarEventoVisivel = false, 100)'
-                                    }
-                                }) }}
-                            <div class="grid grid-cols-1 gap-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                        Nome do Evento
-                                        <span class="text-error">
-                                            *
-                                        </span>
-                                    </label>
-                                    {{ form_widget(form.nome, {attr: {class: 'input input-bordered w-full bg-zinc-900 border-zinc-700 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 placeholder:text-zinc-400', placeholder: 'Ex: Show de Rock, Torneio...' }}
-                                    ) }}
-                                    {{ form_errors(form.nome) }}
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                            Data
-                                        </label>
-                                        {{ form_widget(form.data_inicio, {attr: {class: 'input input-bordered w-full bg-zinc-900 border-zinc-700 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/60' }}
-                                        ) }}
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                            Hora
-                                        </label>
-                                        {{ form_widget(form.hora_inicio, {attr: {class: 'input input-bordered w-full bg-zinc-900 border-zinc-700 text-sm focus:ring-2 focus:ring-primary/40 focus:border-primary/60' }}
-                                        ) }}
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                        Endereço
-                                        <span class="text-error">
-                                            *
-                                        </span>
-                                    </label>
-                                    {{ form_widget(form.endereco, {attr: {class: 'input input-bordered w-full bg-zinc-900 border-zinc-700 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 placeholder:text-zinc-400', placeholder: 'Local do evento...' }}
-                                    ) }}
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                        Categoria
-                                        <span class="text-error">
-                                            *
-                                        </span>
-                                    </label>
-                                    <div class="relative">
-                                        {{ form_widget(form.categoria, {attr: {class: 'select select-bordered w-full bg-zinc-900 border-zinc-700 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 appearance-none pr-10' }}
-                                        ) }}
-                                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">
-                                            <i class="ph ph-caret-down"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                {% if form.descricao is defined %}
-                                    <div>
-                                        <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                            Descrição
-                                        </label>
-                                        {{ form_widget(form.descricao, {attr: {class: 'textarea textarea-bordered w-full bg-zinc-900 border-zinc-700 h-20 focus:ring-2 focus:ring-primary/40 focus:border-primary/60 placeholder:text-zinc-400', placeholder: 'Descreva brevemente...' }}
-                                        ) }}
-                                    </div>
-                                {% endif %}
-                                {{ form_widget(form._token) }}
-                            </div>
-                            <div class="flex gap-3 pt-6">
-                                <button type="button" x-on:click="modalCriarEventoVisivel = false" class="btn btn-ghost flex-1">
-                                    Cancelar
-                                </button>
-                                <button type="submit" class="btn btn-primary flex-1">
-                                    <i class="ph ph-calendar-plus mr-2"></i>
-                                    Criar Evento
-                                </button>
-                            </div>
-                            {{ form_end(form, { render_rest: false }) }}
-                        {% else %}
-                            <div class="text-center">
-                                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-warning/20 to-warning/10 rounded-full flex items-center justify-center">
-                                    <i class="ph ph-sign-in text-2xl text-warning"></i>
-                                </div>
-                                <h4 class="text-lg font-semibold mb-2 text-zinc-200">
-                                    Login Necessário
-                                </h4>
-                                <p class="text-zinc-400 mb-4">
-                                    Você precisa estar logado para criar eventos
-                                </p>
-                                <a href="{{ path('borae_auth_entrar') }}" class="btn btn-primary w-full flex items-center justify-center gap-2">
-                                    <i class="ph ph-sign-in mr-2"></i>
-                                    Fazer Login
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% include 'components/EventoForm.html.twig' with {
+                            form: form,
+                            x_cancel: 'modalCriarEventoVisivel = false',
+                            x_submit_label: 'Criar Evento',
+                            x_submit: "setTimeout(() => modalCriarEventoVisivel = false, 100)",
+                            action: path('borae_eventos_lista')
+                        } %}
                 </div>
             </div>
-            <div x-cloak x-show="modalEditarEventoVisivel" x-transition.opacity.duration.200ms x-trap.inert.noscroll="modalEditarEventoVisivel" x-on:keydown.esc.window="modalEditarEventoVisivel = false" x-on:click.self="modalEditarEventoVisivel = false" class="fixed inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div x-show="modalEditarEventoVisivel" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 p-0 relative overflow-hidden">
+        </template>
+        {# Modal de edição: renderiza todos os forms, só mostra o do evento selecionado #}
+        <template x-if="modalEditarEventoVisivel">
+            <div x-cloak x-show="modalEditarEventoVisivel" x-transition.opacity.duration.200ms x-trap.inert.noscroll="modalEditarEventoVisivel" x-on:keydown.esc.window="modalEditarEventoVisivel = false" x-on:click.self="modalEditarEventoVisivel = false" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div x-show="modalEditarEventoVisivel" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-indigo-700 p-0 relative overflow-hidden">
                     <button x-on:click="modalEditarEventoVisivel = false" aria-label="Fechar" class="absolute top-4 right-4 text-zinc-400 hover:text-error transition-colors z-10">
                         <i class="ph ph-x text-xl"></i>
                     </button>
-                    <div class="bg-gradient-to-r from-warning/10 to-warning/5 px-8 py-6 border-b border-zinc-800">
-                        <h3 class="text-2xl font-bold text-zinc-100">
+                    <div class="bg-gradient-to-br from-primary to-indigo-950  px-8 py-6 border-b">
+                        <h3 class="text-2xl font-bold text-zinc-100 flex items-center gap-2">
                             Editar Evento
                         </h3>
                     </div>
-                    <div class="px-8 py-6">
-                        <form :action="`/eventos/editar/${eventoEdicao.id}`" method="post" class="space-y-5">
-                            <div class="grid grid-cols-1 gap-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                        Nome do Evento
-                                        <span class="text-error">
-                                            *
-                                        </span>
-                                    </label>
-                                    <input type="text" name="nome" x-model="eventoEdicao.nome" class="input input-bordered w-full ..." required />
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                            Data
-                                        </label>
-                                        <input type="date" name="data_inicio" x-model="eventoEdicao.data_inicio" class="input input-bordered w-full ..." required />
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-zinc-200 mb-1">
-                                            Hora
-                                        </label>
-                                        <input type="time" name="hora_inicio" x-model="eventoEdicao.hora_inicio" class="input input-bordered w-full ..." required />
-                                    </div>
-                                </div>
-                                <div class="flex gap-3 pt-6">
-                                    <button type="button" x-on:click="modalEditarEventoVisivel = false" class="btn btn-ghost flex-1">
-                                        Cancelar
-                                    </button>
-                                    <button type="submit" class="btn btn-warning flex-1">
-                                        <i class="ph ph-pencil mr-2"></i>
-                                        Salvar Alterações
-                                    </button>
-                                </div>
+                    <div>
+                        {% for eid, formEdicao in formsEdicao %}
+                            <div x-show="eventoEdicaoId === {{ eid }}">
+                                {% include 'components/EventoForm.html.twig' with {
+                                        form: formEdicao,
+                                        x_cancel: 'modalEditarEventoVisivel = false',
+                                        x_submit_label: 'Salvar',
+                                        x_submit: '',
+                                        action: path('borae_eventos_editar', {'id': eid})
+                                    } %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </template>
+        <div x-data="{ open: false, id: null }" x-on:open-modal.window="if ($event.detail.name === 'confirm-delete') { open = true; id = $event.detail.id }" x-cloak x-show="open" x-transition.opacity.duration.200ms x-trap.inert.noscroll="open" x-on:keydown.esc.window="open = false" x-on:click.self="open = false" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100" class="w-full max-w-lg bg-gradient-to-br from-error to-red-950 rounded-2xl shadow-2xl border border-error p-0 relative overflow-hidden">
+                <button x-on:click="open = false" aria-label="Fechar" class="absolute top-4 right-4 text-zinc-400 hover:text-error transition-colors z-10">
+                    <i class="ph ph-x text-xl text-white"></i>
+                </button>
+                <div class="bg-gradient-to-br px-8 py-6 border-b border-b-error flex items-center justify-center">
+                    <i class="ph ph-trash text-5xl text-white"></i>
+                </div>
+                <div class="px-8 py-6 text-center">
+                    <h4 class="text-lg font-semibold mb-2 text-white">
+                        Confirmar Exclusão
+                    </h4>
+                    <p class="text-white mb-6">
+                        Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.
+                    </p>
+                    <div class="flex gap-3">
+                        <button type="button" x-on:click="open = false" class="btn btn-soft flex-1">
+                            Cancelar
+                        </button>
+                        <form :action="`/eventos/deletar/${id}`" method="post" class="flex-1">
+                            <input type="hidden" name="_token" :value="document.querySelector(`form[action='/eventos/deletar/${id}'] input[name='_token']`).value">
+                                <button type="submit" class="btn btn-error w-full">
+                                    Excluir
+                                </button>
                             </form>
                         </div>
                     </div>
