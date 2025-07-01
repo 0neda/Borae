@@ -151,9 +151,7 @@
         </main>
         <section id="alertas" class="toast toast-start">
             {% for category, messages in app.flashes %}
-                {% for message in messages %}
-                    <twig:Alerta type="{{ category }}" message="{{ message }}" />
-                {% endfor %}
+                {% for message in messages %}{# <twig:Alerta type="{{ category }}" message="{{ message }}" /> #}{% endfor %}
             {% endfor %}
         </section>
         {% block javascripts %}

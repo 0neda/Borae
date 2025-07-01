@@ -22,14 +22,12 @@ class EventoForm extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime',
                 'html5' => true,
+                'years' => [date('Y')],
             ])
             ->add('hora_inicio', TimeType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime',
                 'with_seconds' => false,
-                'attr' => [
-                'step' => '300',
-    ],
 ])
             ->add('endereco')
              ->add('categoria', EnumType::class, [
