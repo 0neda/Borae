@@ -13,3 +13,9 @@ Efetuar as configurações do MySQL no .env conforme seu ambiente e executar os 
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
+
+Após isso, só compilar o bundle e rodar o servidor:
+```
+npm run build
+symfony server:start
+```
